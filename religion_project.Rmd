@@ -14,4 +14,5 @@ library(readr)
 #change
 df <- read_csv("Test.csv")
 ```
-
+This dataset has information about over 36,000 individuals, with columns including information about the state or origin, happiness, questions about attitudes about other religions and immigrants, religious teachings, perceived spirituality/religiosity, marriage status, political leaning, family income, among others. This data comes from the Pew Research Center, a reputable source for surveys on the American population.
+Some potential areas we could explore with this data include seeing which variables are most associated with religiosity, 
