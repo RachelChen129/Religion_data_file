@@ -1,6 +1,6 @@
 ---
 title: "religion_project"
-author: "Jake Hildebrandt"
+author: "Rachel Chen, Topher Hanagan, Jakob Hildebrandt"
 date: "2026-03-29"
 output: html_document
 ---
@@ -11,6 +11,31 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(readr)
+library(dplyr)
+# import data
+data <- read_csv("Test.csv")
 
-df <- read_csv("Test.csv")
-``
+data <- data |> select(-REGION, -DENOMREC2, -FAMILY, -PROTFAM, -CURREL2, -FRMREL2, -SPREL, -SPREL2, -SPBORNFINAL, -KIDS4ANDUNDERREC, -KIDS5TO12REC, -KIDS13TO17REC, -CITIZEN, -BRANCH, -BIRTHHALFDECADE, -RESPONDENT_BIRTHREGION, -MOTHER_BIRTHREGION, -FATHER_BIRTHREGION, -YEARSINUSREC, -ORIENTMOD, -STATE, -MSA)
+```
+
+This dataset has information about over 36,000 individuals, with columns including information about the state or origin, happiness, questions about attitudes about other religions and immigrants, religious teachings, perceived spirituality/religiosity, marriage status, political leaning, family income, among others. This data comes from the Pew Research Center, a reputable source for surveys on the American population.
+
+### Ideas and Questions:
+
+Some potential areas we could explore with this data include seeing which variables are most associated with religiosity.
+
+1) Test people's faithfulness as predictors or stand-ins. How important is religion in your life? How important is this to you when making decisions about right and wrong?
+
+2) Are you personally a member of a church, synagogue, mosque, temple, or other house of worship?
+
+3) Look at people who consider themselves religious vs actually attend religious services. 
+
+4) Try to find the correlation between consider yourself religious and attendance. Could also use a composite for praying and attendance to as a stand-in for "religiosity"
+
+5) Check how the religion related with family or parents. How parents religion affect your religion? Is father religion or mother religion same as your?
+
+6) How religious based of age(birth)? Try to find out did the state affect how you religious?
+
+7) How marriage affect the religion?
+
+8) How support for abortion vs gay marriage as a predictor for party affiliation?
