@@ -39,3 +39,7 @@ Some potential areas we could explore with this data include seeing which variab
 7) How marriage affect the religion?
 
 8) How support for abortion vs gay marriage as a predictor for party affiliation?
+
+
+# Driving Question:
+How well can we predict religiosity based on factors including church attendance, family relationships, marriage, political opinions.
