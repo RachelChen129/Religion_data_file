@@ -367,7 +367,7 @@ library(dplyr)</code></pre>
 <pre><code>## The following objects are masked from &#39;package:base&#39;:
 ## 
 ##     intersect, setdiff, setequal, union</code></pre>
-<pre class="r"><code>#import data
+<pre class="r"><code># import data
 data &lt;- read_csv(&quot;Test.csv&quot;)</code></pre>
 <pre><code>## Rows: 36908 Columns: 152</code></pre>
 <pre><code>## ── Column specification ────────────────────────────────────────────────────────
@@ -377,7 +377,7 @@ data &lt;- read_csv(&quot;Test.csv&quot;)</code></pre>
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>data &lt;-data |&gt; select(-REGION, -DENOMREC2, -FAMILY, -PROTFAM, -CURREL2, -FRMREL2,-SPREL, -SPREL2, -SPBORNFINAL,-KIDS4ANDUNDERREC,-KIDS5TO12REC,-KIDS13TO17REC,-CITIZEN,-BRANCH,-BIRTHHALFDECADE,-RESPONDENT_BIRTHREGION,-MOTHER_BIRTHREGION,-FATHER_BIRTHREGION,-YEARSINUSREC,-ORIENTMOD,-STATE,-MSA)</code></pre>
+<pre class="r"><code>data &lt;- data |&gt; select(-REGION, -DENOMREC2, -FAMILY, -PROTFAM, -CURREL2, -FRMREL2, -SPREL, -SPREL2, -SPBORNFINAL, -KIDS4ANDUNDERREC, -KIDS5TO12REC, -KIDS13TO17REC, -CITIZEN, -BRANCH, -BIRTHHALFDECADE, -RESPONDENT_BIRTHREGION, -MOTHER_BIRTHREGION, -FATHER_BIRTHREGION, -YEARSINUSREC, -ORIENTMOD, -STATE, -MSA)</code></pre>
 <p>This dataset has information about over 36,000 individuals, with
 columns including information about the state or origin, happiness,
 questions about attitudes about other religions and immigrants,
