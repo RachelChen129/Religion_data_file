@@ -44,5 +44,3 @@ Some potential areas we could explore with this data include seeing which variab
 # Driving Question:
 How well can we predict religiosity based on factors including church attendance, family relationships, marriage, political opinions.
 
-Do the t-test
-try multi-linear regression equation
