@@ -9,11 +9,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<<<<<<< HEAD
-<meta name="author" content="Jake Hildebrandt" />
-=======
 <meta name="author" content="Rachel Chen, Topher Hanagan, Jakob Hildebrandt" />
->>>>>>> 101222233a14bc16df177dc0e16959f70b7f4d1d
 
 <meta name="date" content="2026-03-29" />
 
@@ -355,23 +351,13 @@ display: none;
 
 
 <h1 class="title toc-ignore">religion_project</h1>
-<<<<<<< HEAD
-<h4 class="author">Jake Hildebrandt</h4>
-=======
 <h4 class="author">Rachel Chen, Topher Hanagan, Jakob Hildebrandt</h4>
->>>>>>> 101222233a14bc16df177dc0e16959f70b7f4d1d
 <h4 class="date">2026-03-29</h4>
 
 </div>
 
 
 <pre class="r"><code>library(readr)
-<<<<<<< HEAD
-#change
-df &lt;- read_csv(&quot;Test.csv&quot;)</code></pre>
-<pre><code>## Rows: 36908 Columns: 152
-## ── Column specification ────────────────────────────────────────────────────────
-=======
 library(dplyr)</code></pre>
 <pre><code>## 
 ## Attaching package: &#39;dplyr&#39;</code></pre>
@@ -381,32 +367,23 @@ library(dplyr)</code></pre>
 <pre><code>## The following objects are masked from &#39;package:base&#39;:
 ## 
 ##     intersect, setdiff, setequal, union</code></pre>
-<pre class="r"><code>#import data
+<pre class="r"><code># import data
 data &lt;- read_csv(&quot;Test.csv&quot;)</code></pre>
 <pre><code>## Rows: 36908 Columns: 152</code></pre>
 <pre><code>## ── Column specification ────────────────────────────────────────────────────────
->>>>>>> 101222233a14bc16df177dc0e16959f70b7f4d1d
 ## Delimiter: &quot;,&quot;
 ## dbl (130): P_SUID, YEAR_FROM_CODATE, HAPPY, SATIS_A, SATIS_B, CHNG_A, CHNG_B...
 ## lgl  (22): REGION, DENOMREC2, FAMILY, PROTFAM, CURREL2, FRMREL2, SPREL, SPRE...
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<<<<<<< HEAD
-=======
 <pre class="r"><code>data &lt;-data |&gt; select(-REGION, -DENOMREC2, -FAMILY, -PROTFAM, -CURREL2, -FRMREL2,-SPREL, -SPREL2, -SPBORNFINAL,-KIDS4ANDUNDERREC,-KIDS5TO12REC,-KIDS13TO17REC,-CITIZEN,-BRANCH,-BIRTHHALFDECADE,-RESPONDENT_BIRTHREGION,-MOTHER_BIRTHREGION,-FATHER_BIRTHREGION,-YEARSINUSREC,-ORIENTMOD,-STATE,-MSA)</code></pre>
->>>>>>> 101222233a14bc16df177dc0e16959f70b7f4d1d
 <p>This dataset has information about over 36,000 individuals, with
 columns including information about the state or origin, happiness,
 questions about attitudes about other religions and immigrants,
 religious teachings, perceived spirituality/religiosity, marriage
 status, political leaning, family income, among others. This data comes
 from the Pew Research Center, a reputable source for surveys on the
-<<<<<<< HEAD
-American population. Some potential areas we could explore with this
-data include seeing which variables are most associated with
-religiosity,</p>
-=======
 American population.</p>
 <div id="ideas-and-questions" class="section level3">
 <h3>Ideas and Questions:</h3>
@@ -433,7 +410,6 @@ affect how you religious?</p></li>
 affiliation?</p></li>
 </ol>
 </div>
->>>>>>> 101222233a14bc16df177dc0e16959f70b7f4d1d
 
 
 
