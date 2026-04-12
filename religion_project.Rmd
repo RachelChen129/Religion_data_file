@@ -15,7 +15,7 @@ library(dplyr)
 # import data
 data <- read_csv("Test.csv")
 
-data <- data |> select(-REGION, -DENOMREC2, -FAMILY, -PROTFAM, -CURREL2, -FRMREL2, -SPREL, -SPREL2, -SPBORNFINAL, -KIDS4ANDUNDERREC, -KIDS5TO12REC, -KIDS13TO17REC, -CITIZEN, -BRANCH, -BIRTHHALFDECADE, -RESPONDENT_BIRTHREGION, -MOTHER_BIRTHREGION, -FATHER_BIRTHREGION, -YEARSINUSREC, -ORIENTMOD, -STATE, -MSA)
+data <- data |> select(-REGION, -DENOMREC2, -FAMILY, -PROTFAM, -CURREL2, -FRMREL2, -SPREL, -SPREL2, -SPBORNFINAL, -KIDS4ANDUNDERREC, -KIDS5TO12REC, -KIDS13TO17REC, -CITIZEN)
 ```
 
 This dataset has information about over 36,000 individuals, with columns including information about the state or origin, happiness, questions about attitudes about other religions and immigrants, religious teachings, perceived spirituality/religiosity, marriage status, political leaning, family income, among others. This data comes from the Pew Research Center, a reputable source for surveys on the American population.
