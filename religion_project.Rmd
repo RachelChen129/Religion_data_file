@@ -43,3 +43,4 @@ Some potential areas we could explore with this data include seeing which variab
 
 # Driving Question:
 How well can we predict religiosity based on factors including church attendance, family relationships, marriage, political opinions.
+Which factors are most effective in predicting religiousity of individuals. Does this vary by religious affiliation.
