@@ -358,26 +358,9 @@ display: none;
 
 
 <pre class="r"><code>library(readr)
-library(dplyr)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;dplyr&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     intersect, setdiff, setequal, union</code></pre>
-<pre class="r"><code># import data
+library(dplyr)
+# import data
 data &lt;- read_csv(&quot;Test.csv&quot;)</code></pre>
-<pre><code>## Rows: 36908 Columns: 152</code></pre>
-<pre><code>## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: &quot;,&quot;
-## dbl (130): P_SUID, YEAR_FROM_CODATE, HAPPY, SATIS_A, SATIS_B, CHNG_A, CHNG_B...
-## lgl  (22): REGION, DENOMREC2, FAMILY, PROTFAM, CURREL2, FRMREL2, SPREL, SPRE...
-## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>data &lt;-data |&gt; select(-REGION, -DENOMREC2, -FAMILY, -PROTFAM, -CURREL2, -FRMREL2,-SPREL, -SPREL2, -SPBORNFINAL,-KIDS4ANDUNDERREC,-KIDS5TO12REC,-KIDS13TO17REC,-CITIZEN,-BRANCH,-BIRTHHALFDECADE,-RESPONDENT_BIRTHREGION,-MOTHER_BIRTHREGION,-FATHER_BIRTHREGION,-YEARSINUSREC,-ORIENTMOD,-STATE,-MSA)</code></pre>
 <p>This dataset has information about over 36,000 individuals, with
 columns including information about the state or origin, happiness,
 questions about attitudes about other religions and immigrants,
@@ -409,6 +392,26 @@ affect how you religious?</p></li>
 <li><p>How support for abortion vs gay marriage as a predictor for party
 affiliation?</p></li>
 </ol>
+</div>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>The dataset that we’re working with comes from the PEW Research
+Center. The survey was intended to get responses from as many Americans
+as possible, offering surveys in English and Spanish in all 50 states,
+with online, paper and phone format options. The data contains
+information about the religious, political, spiritual and social
+background of those surveyed. The data can be accessed at the following
+link: <a href="https://www.pewresearch.org/dataset/2023-24-religious-landscape-study-rls-dataset/" class="uri">https://www.pewresearch.org/dataset/2023-24-religious-landscape-study-rls-dataset/</a>
+After trimming down our dataset to include only those with useful
+information and those without all NA values, we were left with 93
+columns. Our driving question is twofold: 1) How well can we predict
+religiosity based on factors including church attendance, family
+relationships, marriage, political opinions. 2) Which factors are most
+effective in predicting religiousity of individuals. Does this vary by
+religious affiliation.</p>
+</div>
+<div id="exploratory-data-analysis" class="section level1">
+<h1>Exploratory Data Analysis</h1>
 </div>
 
 
