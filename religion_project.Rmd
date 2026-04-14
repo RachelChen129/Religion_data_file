@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r, message=FALSE}
 library(readr)
 library(dplyr)
+library(tidyverse)
 # import data
 data <- read_csv("Test.csv")
 ```
@@ -47,7 +48,75 @@ After trimming down our dataset to include only those with useful information an
 
 # Exploratory Data Analysis
 
-```{r}
+In our dataset, the most important variables are:
+RELTRAD (religious affiliation)
+CURREL (same as before but collapses evangelical, mainline and black prot into one group)
+RELPER (how religious the respondent is, 1-4)
+SPIRPER (how spiritual the respondent is, 1-4)
+ATTNDPERRLS (how often they attend in person)
+GOD (belief in God)
+HVN (is there a heaven)
+HLL (is there a hell)
+PRAY (frequency of prayer in personal life)
+PRAC_B (how often do you read scripture outside of worship service)
+PRAC_D (how often do you share your beliefs with others)
 
+First, we turn CURREL into a factor so that we can create "bins" of how many people fall into each religious tradition
+
+```{r}
+data <- data |> mutate(CURREL = factor(CURREL, levels=c(1000,10000,20000,30000,40001,40002,50000,60000,70000,80000,90001,90002,100000,900000),
+                                       labels=c("Protestant","Catholic", "Mormon", "Orthodox", "JW", "Other Christian", "Jewish", "Muslim", "Buddhist", "Hindu", "Other Religion", "Other Faith", "Unaffiliated", "Uninterpretable")))
 ```
 
+From here, we can look at the relationship between each of the other variables and religion.
+
+
+First, before trying to plot the data, we noticed that there was a much larger number of those who identified as Catholic, Protestant or Unaffiliated than anything else, so we split the histogram facet_wrap into two to account for this (then split it again to account for the much larger prevalence of Mormon, Jewish and Other Faith than all the other religious identities combined) so that the spread of each religion across the different values would be clear. This splitting up of the religious categories will prove useful throughout the duration of the EDA section.
+
+
+Looking at the correlation between each specific faith and personal spirituality (1=most spiritual, 4= least spiritual, 5=don't know/refused), we notice a few trends: most faiths seemed to have the largest spike at either 1 or 2. Interestingly, the Unaffiliated category also has the largest spikes around 1 and 2, and not 4. This could be that many people who identified as Unaffiliated, although they did not profess a specific religion, still considered themselves spiritual in some sense.
+```{r, message=FALSE}
+data$SPIRPER[data$SPIRPER == 99] <- 5
+
+data_subset1 <- data |>
+  filter(CURREL %in% c("Protestant", "Catholic", "Unaffiliated"))
+data_subset2 <- data |>
+  filter(CURREL %in% c("Mormon", "Jewish", "Other Faith"))
+data_subset3 <- data |>
+  filter(CURREL %in% c("Orthodox", "JW", "Other Christian", "Muslim", "Buddhist", "Hindu", "Other Religion",  "Uninterpretable"))
+
+ggplot(data = data_subset1, aes(x=SPIRPER))+
+  geom_histogram()+
+  facet_wrap(~CURREL)
+ggplot(data = data_subset2, aes(x=SPIRPER))+
+  geom_histogram()+
+  facet_wrap(~CURREL)
+ggplot(data = data_subset3, aes(x=SPIRPER))+
+  geom_histogram()+
+  facet_wrap(~CURREL)
+```
+
+
+
+The spread for religiosity is shifted more to the higher values than spirituality: there were only two religions where the plurality (largest spike) was 1 (most religious).
+
+```{r, message=FALSE}
+data$RELPER[data$RELPER == 99] <- 5
+
+data_subset1 <- data |>
+  filter(CURREL %in% c("Protestant", "Catholic", "Unaffiliated"))
+data_subset2 <- data |>
+  filter(CURREL %in% c("Mormon", "Jewish", "Other Faith"))
+data_subset3 <- data |>
+  filter(CURREL %in% c("Orthodox", "JW", "Other Christian", "Muslim", "Buddhist", "Hindu", "Other Religion",  "Uninterpretable"))
+
+ggplot(data = data_subset1, aes(x=RELPER))+
+  geom_histogram()+
+  facet_wrap(~CURREL)
+ggplot(data = data_subset2, aes(x=RELPER))+
+  geom_histogram()+
+  facet_wrap(~CURREL)
+ggplot(data = data_subset3, aes(x=RELPER))+
+  geom_histogram()+
+  facet_wrap(~CURREL)
+```
