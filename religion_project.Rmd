@@ -66,6 +66,9 @@ First, we turn CURREL into a factor so that we can create "bins" of how many peo
 ```{r}
 data <- data |> mutate(CURREL = factor(CURREL, levels=c(1000,10000,20000,30000,40001,40002,50000,60000,70000,80000,90001,90002,100000,900000),
                                        labels=c("Protestant","Catholic", "Mormon", "Orthodox", "JW", "Other Christian", "Jewish", "Muslim", "Buddhist", "Hindu", "Other Religion", "Other Faith", "Unaffiliated", "Uninterpretable")))
+
+data <- data |> mutate(FRMREL = factor(FRMREL, levels=c(1000,10000,20000,30000,40001,40002,50000,60000,70000,80000,90001,90002,100000,900000),
+                                       labels=c("Protestant","Catholic", "Mormon", "Orthodox", "JW", "Other Christian", "Jewish", "Muslim", "Buddhist", "Hindu", "Other Religion", "Other Faith", "Unaffiliated", "Uninterpretable")))
 ```
 
 From here, we can look at the relationship between each of the other variables and religion.
