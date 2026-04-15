@@ -204,6 +204,13 @@ Check for Assumptions of Regression:
 2. Nearly normal residuals
 3. Constant variability
 
+## Section 4: Political Predictors of Religiosity
+
+```{r}
+
+```
+
+
 ## Full Model, Search for the Best Model
 
 Finally, we construct a comprehensive model that incorporates spirituality, behavioral measures, belief variables, and religious affiliation to determine which factors are most important in predicting religiosity.
