@@ -120,3 +120,99 @@ ggplot(data = data_subset3, aes(x=RELPER))+
   geom_histogram()+
   facet_wrap(~CURREL)
 ```
+
+# Statistical Analysis
+
+To formally investigate the relationships suggested by the exploratory data analysis, we apply several statistical methods, including analysis of variance (ANOVA), correlation analysis, and multiple linear regression. These methods allow us to test for group differences, measure associations between variables, and identify key predictors of religiosity.
+
+## Section 1: Group Differences
+
+We begin by examining whether religiosity differs across religious traditions.
+
+Hypothesis Test:
+H0: No difference in religiosity between groups.
+Ha: There is a difference.
+
+```{r}
+anova_model <- aov(RELPER ~ CURREL, data=data)
+summary(anova_model)
+```
+
+Interpret the what we get from anova model result....
+
+Check Assumptions for ANOVA:
+1. Independence
+2. Normality within groups
+3. Equal variance
+
+```{r}
+plot(anova_model)
+```
+
+
+... Interpret assumptions.
+
+## Section 2: Spirituality vs Religiosity
+
+Next, we examine the relationship between spirituality and religiosity, as the exploratory analysis suggested that even unaffiliated individuals report relatively high levels of spirituality.
+
+```{r}
+cor(data$RELPER, data$SPIRPER, use="complete.obs")
+
+model1 <- lm(RELPER ~ SPIRPER, data=data)
+summary(model1)
+```
+Choose a plot to see the relationship:
+
+```{r}
+ggplot(data = data) +
+  geom_jitter(aes(x = SPIRPER, y = RELPER), width = 0.2, height = 0.2, alpha = 0.3) +
+  geom_smooth(method = "lm", aes(x = SPIRPER, y = RELPER), color = 'green')
+
+ggplot(data, aes(x = factor(SPIRPER), y = RELPER)) +
+  geom_boxplot()
+
+data |> 
+  group_by(SPIRPER) |> 
+  summarize(mean_rel = mean(RELPER, na.rm=TRUE)) |> 
+  ggplot(aes(x = SPIRPER, y = mean_rel)) +
+  geom_point() +
+  geom_line()
+```
+
+Interpret....
+
+## Section 3: Behavioral Predictors
+
+While spirituality captures internal beliefs, religiosity may also be influenced by observable behaviors such as attendance and prayer. We therefore examine whether these behavioral variables are significant predictors of religiosity.
+
+```{r}
+model2 <- lm(RELPER ~ ATTNDPERRLS + PRAY + PRAC_B + PRAC_D, data=data)
+summary(model2)
+```
+Hypothesis Testing:
+H0:
+Ha:
+
+Interpret the result...
+
+Check for Assumptions of Regression:
+1. Linearity
+2. Nearly normal residuals
+3. Constant variability
+
+## Full Model, Search for the Best Model
+
+Finally, we construct a comprehensive model that incorporates spirituality, behavioral measures, belief variables, and religious affiliation to determine which factors are most important in predicting religiosity.
+
+```{r}
+final_model <- lm(RELPER ~ SPIRPER + ATTNDPERRLS + PRAY + PRAC_B + PRAC_D + GOD + HVN + HLL + CURREL, data=data)
+summary(final_model)
+```
+
+Check for Assumptions of Regression:
+1. Linearity
+2. Nearly normal residuals
+3. Constant variability
+
+Dropping the variables that has p-value higher than 0.05. After dropping will model be better?
