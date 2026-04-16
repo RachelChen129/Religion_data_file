@@ -66,9 +66,6 @@ First, we turn CURREL into a factor so that we can create "bins" of how many peo
 ```{r}
 data <- data |> mutate(CURREL = factor(CURREL, levels=c(1000,10000,20000,30000,40001,40002,50000,60000,70000,80000,90001,90002,100000,900000),
                                        labels=c("Protestant","Catholic", "Mormon", "Orthodox", "JW", "Other Christian", "Jewish", "Muslim", "Buddhist", "Hindu", "Other Religion", "Other Faith", "Unaffiliated", "Uninterpretable")))
-
-data <- data |> mutate(FRMREL = factor(FRMREL, levels=c(1000,10000,20000,30000,40001,40002,50000,60000,70000,80000,90001,90002,100000,900000),
-                                       labels=c("Protestant","Catholic", "Mormon", "Orthodox", "JW", "Other Christian", "Jewish", "Muslim", "Buddhist", "Hindu", "Other Religion", "Other Faith", "Unaffiliated", "Uninterpretable")))
 ```
 
 From here, we can look at the relationship between each of the other variables and religion.
@@ -190,7 +187,9 @@ Interpret....
 While spirituality captures internal beliefs, religiosity may also be influenced by observable behaviors such as attendance and prayer. We therefore examine whether these behavioral variables are significant predictors of religiosity.
 
 ```{r}
-model2 <- lm(RELPER ~ ATTNDPERRLS + PRAY + PRAC_B + PRAC_D, data=data)
+no99 <- subset(data, RELPER != 99 & ATTNDPERRLS != 99 & PRAY != 99 & PRAC_B != 99 & PRAC_D != 99)
+
+model2 <- lm(RELPER ~ ATTNDPERRLS + PRAY + PRAC_B + PRAC_D, data=no99)
 summary(model2)
 ```
 Hypothesis Testing:
@@ -207,7 +206,12 @@ Check for Assumptions of Regression:
 ## Section 4: Political Predictors of Religiosity
 
 ```{r}
+# Create a new dataframe excluding 99s for your specific variables
+data_clean <- subset(data, RELPER != 99 & ABRTLGL != 99 & GAYMARR != 99 & QB2A != 99)
 
+# Run the model on the cleaned data
+model3 <- lm(RELPER ~ ABRTLGL + GAYMARR + QB2A, data = data_clean)
+summary(model3)
 ```
 
 
