@@ -206,14 +206,62 @@ Check for Assumptions of Regression:
 ## Section 4: Political Predictors of Religiosity
 
 ```{r}
-# Create a new dataframe excluding 99s for your specific variables
-data_clean <- subset(data, RELPER != 99 & ABRTLGL != 99 & GAYMARR != 99 & QB2A != 99)
+data_clean <- subset(data, RELPER != 99 & ABRTLGL != 99 & GAYMARR != 99 & QB2A != 99 & CHNG_C)
 
-# Run the model on the cleaned data
-model3 <- lm(RELPER ~ ABRTLGL + GAYMARR + QB2A, data = data_clean)
+model3 <- lm(RELPER ~ ABRTLGL + GAYMARR + QB2A + CHNG_C, data = data_clean)
 summary(model3)
+
+data_clean_spir <- subset(data, SPIRPER != 99 & ABRTLGL != 99 & GAYMARR != 99 & QB2A != 99 & CHNG_C)
+
+data_spir <- lm(SPIRPER ~ ABRTLGL + GAYMARR + QB2A + CHNG_C, data = data_clean)
+summary(data_spir)
+
+
+```
+It would appear that removal of the 99s which represent those who did not answer made a substantial difference on the fit of the model. 
+Furthermore, support for gay marriage predicts religiosity well, as does support for transgender individuals. However, acceptance of homosexuality is an incredibly poor predictor of religiosity in the body public. 
+
+Alternatively, support for abortion, homosexuality, and gay marriage predicts _spirituality_ but support for transgender individuals does not predict _spirituality_
+
+```{r}
+data_clean2 <- subset(data, RELPER != 99 & ABRTLGL != 99 & GAYMARR != 99 & QB2A != 99 & CHNG_C != 99)
+
+
+catholic_pol <- data_clean2 |> filter(CURREL == "Catholic")
+catholic_polly <- lm(RELPER ~ ABRTLGL + GAYMARR + QB2A + CHNG_C, data = catholic_pol)
+summary(catholic_polly)
+
+
+protestant_pol <- data_clean2 |> filter(CURREL == "Protestant")
+protestant_polly <- lm(RELPER ~ ABRTLGL + GAYMARR + QB2A + CHNG_C, data = protestant_pol)
+summary(protestant_polly)
+
+unaffiliated_pol <- data_clean2 |> filter(CURREL == "Unaffiliated")
+unaffiliated_polly <- lm(RELPER ~ ABRTLGL + GAYMARR + QB2A + CHNG_C, data = unaffiliated_pol)
+summary(unaffiliated_polly)
+
+
 ```
 
+
+While support for abortion, same sex marriage, and homosexuality is a statistically significant predictor of religiousity in Catholics and people who are unaffiliated, support for these causes is not statistically significant in predicting religiosity in Protestants. Interstingly, greater acceptance of transgender individuals cannot be used to predict religiosity in people who are unaffiliated. 
+
+```{r}
+data_clean3 <- subset(data, RELPER != 99 & CHNG_A != 99 & CHNG_B != 99 & DIVRELPOP != 99 & DIVRACPOP != 99 & QB2C != 99)
+
+catholic_pol2 <- data_clean3 |> filter(CURREL == "Catholic")
+catholic_polly2 <- lm(RELPER ~ CHNG_A + CHNG_B + DIVRELPOP + DIVRACPOP + QB2C, data = catholic_pol)
+summary(catholic_polly2)
+
+data_clean3 <- subset(data, RELPER != 99 & CHNG_A != 99 & CHNG_B != 99 & DIVRELPOP != 99 & DIVRACPOP != 99 & QB2C != 99)
+
+protestant_pol2 <- data_clean3 |> filter(CURREL == "Protestant")
+protestant_polly2 <- lm(RELPER ~ CHNG_A + CHNG_B + DIVRELPOP + DIVRACPOP + QB2C, data = catholic_pol)
+summary(protestant_polly2)
+
+```
+
+Support for a growing immigrant population is not predictive of religiousity, but 
 
 ## Full Model, Search for the Best Model
 
