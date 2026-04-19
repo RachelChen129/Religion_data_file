@@ -1,0 +1,896 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={religion\_project},
+  pdfauthor={Rachel Chen, Topher Hanagan, Jakob Hildebrandt},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{religion\_project}
+\author{Rachel Chen, Topher Hanagan, Jakob Hildebrandt}
+\date{2026-03-29}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}\label{introduction}
+
+The dataset that we're working with comes from the PEW Research Center.
+The survey was intended to get responses from as many Americans as
+possible, offering surveys in English and Spanish in all 50 states, with
+online, paper and phone format options. The data contains information
+about the religious, political, spiritual and social background of those
+surveyed. The data can be accessed at the following link:
+\url{https://www.pewresearch.org/dataset/2023-24-religious-landscape-study-rls-dataset/}
+After trimming down our dataset to include only those with useful
+information and those without all NA values, we were left with 93
+columns. Our driving question is twofold: 1) How well can we predict
+religiosity and spirituality based on factors including church
+attendance, family relationships, marriage, political opinions,
+religious affiliation and devotion, etc.? 2) Which factors are most
+effective in predicting religiosity/spirituality of individuals? Does
+this vary by religious affiliation?
+
+\section{Exploratory Data Analysis}\label{exploratory-data-analysis}
+
+In our dataset, the most important variables are: RELTRAD (religious
+affiliation) CURREL (same as before but collapses evangelical, mainline
+and black prot into one group) RELPER (how religious the respondent is,
+1-4) SPIRPER (how spiritual the respondent is, 1-4) ATTNDPERRLS (how
+often they attend in person) GOD (belief in God) HVN (is there a heaven)
+HLL (is there a hell) PRAY (frequency of prayer in personal life)
+PRAC\_B (how often do you read scripture outside of worship service)
+PRAC\_D (how often do you share your beliefs with others)
+
+First, we turn CURREL into a factor so that we can create ``bins'' of
+how many people fall into each religious tradition
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{|\textgreater{}} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{CURREL =} \FunctionTok{factor}\NormalTok{(CURREL, }\AttributeTok{levels=}\FunctionTok{c}\NormalTok{(}\DecValTok{1000}\NormalTok{,}\DecValTok{10000}\NormalTok{,}\DecValTok{20000}\NormalTok{,}\DecValTok{30000}\NormalTok{,}\DecValTok{40001}\NormalTok{,}\DecValTok{40002}\NormalTok{,}\DecValTok{50000}\NormalTok{,}\DecValTok{60000}\NormalTok{,}\DecValTok{70000}\NormalTok{,}\DecValTok{80000}\NormalTok{,}\DecValTok{90001}\NormalTok{,}\DecValTok{90002}\NormalTok{,}\DecValTok{100000}\NormalTok{,}\DecValTok{900000}\NormalTok{),}
+                                       \AttributeTok{labels=}\FunctionTok{c}\NormalTok{(}\StringTok{"Protestant"}\NormalTok{,}\StringTok{"Catholic"}\NormalTok{, }\StringTok{"Mormon"}\NormalTok{, }\StringTok{"Orthodox"}\NormalTok{, }\StringTok{"JW"}\NormalTok{, }\StringTok{"Other Christian"}\NormalTok{, }\StringTok{"Jewish"}\NormalTok{, }\StringTok{"Muslim"}\NormalTok{, }\StringTok{"Buddhist"}\NormalTok{, }\StringTok{"Hindu"}\NormalTok{, }\StringTok{"Other Religion"}\NormalTok{, }\StringTok{"Other Faith"}\NormalTok{, }\StringTok{"Unaffiliated"}\NormalTok{, }\StringTok{"Uninterpretable"}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
+From here, we can look at the relationship between each of the other
+variables and religion.
+
+First, before trying to plot the data, we noticed that there was a much
+larger number of those who identified as Catholic, Protestant or
+Unaffiliated than anything else, so we split the histogram facet\_wrap
+into two to account for this (then split it again to account for the
+much larger prevalence of Mormon, Jewish and Other Faith than all the
+other religious identities combined) so that the spread of each religion
+across the different values would be clear. This splitting up of the
+religious categories will prove useful throughout the duration of the
+EDA section.
+
+Looking at the correlation between each specific faith and personal
+spirituality (1=most spiritual, 4= least spiritual, 5=don't
+know/refused), we notice a few trends: most faiths seemed to have the
+largest spike at either 1 or 2. Interestingly, the Unaffiliated category
+also has the largest spikes around 1 and 2, and not 4. This could be
+that many people who identified as Unaffiliated, although they did not
+profess a specific religion, still considered themselves spiritual
+(spiritual but not religious).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{SPIRPER[data}\SpecialCharTok{$}\NormalTok{SPIRPER }\SpecialCharTok{==} \DecValTok{99}\NormalTok{] }\OtherTok{\textless{}{-}} \DecValTok{5}
+
+\NormalTok{data\_subset1 }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{filter}\NormalTok{(CURREL }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"Protestant"}\NormalTok{, }\StringTok{"Catholic"}\NormalTok{, }\StringTok{"Unaffiliated"}\NormalTok{))}
+\NormalTok{data\_subset2 }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{filter}\NormalTok{(CURREL }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"Mormon"}\NormalTok{, }\StringTok{"Jewish"}\NormalTok{, }\StringTok{"Other Faith"}\NormalTok{))}
+\NormalTok{data\_subset3 }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{filter}\NormalTok{(CURREL }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"Orthodox"}\NormalTok{, }\StringTok{"JW"}\NormalTok{, }\StringTok{"Other Christian"}\NormalTok{, }\StringTok{"Muslim"}\NormalTok{, }\StringTok{"Buddhist"}\NormalTok{, }\StringTok{"Hindu"}\NormalTok{, }\StringTok{"Other Religion"}\NormalTok{,  }\StringTok{"Uninterpretable"}\NormalTok{))}
+
+\FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ data\_subset1, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{SPIRPER))}\SpecialCharTok{+}
+  \FunctionTok{geom\_histogram}\NormalTok{()}\SpecialCharTok{+}
+  \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{CURREL)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{religion_project_files/figure-latex/unnamed-chunk-3-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ data\_subset2, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{SPIRPER))}\SpecialCharTok{+}
+  \FunctionTok{geom\_histogram}\NormalTok{()}\SpecialCharTok{+}
+  \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{CURREL)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{religion_project_files/figure-latex/unnamed-chunk-3-2.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ data\_subset3, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{SPIRPER))}\SpecialCharTok{+}
+  \FunctionTok{geom\_histogram}\NormalTok{()}\SpecialCharTok{+}
+  \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{CURREL)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{religion_project_files/figure-latex/unnamed-chunk-3-3.pdf}}
+
+The spread for religiosity is shifted more to the higher (less
+religious) values than spirituality: there were only two religions where
+the plurality (largest spike) was 1 (most religious).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{RELPER[data}\SpecialCharTok{$}\NormalTok{RELPER }\SpecialCharTok{==} \DecValTok{99}\NormalTok{] }\OtherTok{\textless{}{-}} \DecValTok{5}
+
+\NormalTok{data\_subset1 }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{filter}\NormalTok{(CURREL }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"Protestant"}\NormalTok{, }\StringTok{"Catholic"}\NormalTok{, }\StringTok{"Unaffiliated"}\NormalTok{))}
+\NormalTok{data\_subset2 }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{filter}\NormalTok{(CURREL }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"Mormon"}\NormalTok{, }\StringTok{"Jewish"}\NormalTok{, }\StringTok{"Other Faith"}\NormalTok{))}
+\NormalTok{data\_subset3 }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{filter}\NormalTok{(CURREL }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"Orthodox"}\NormalTok{, }\StringTok{"JW"}\NormalTok{, }\StringTok{"Other Christian"}\NormalTok{, }\StringTok{"Muslim"}\NormalTok{, }\StringTok{"Buddhist"}\NormalTok{, }\StringTok{"Hindu"}\NormalTok{, }\StringTok{"Other Religion"}\NormalTok{,  }\StringTok{"Uninterpretable"}\NormalTok{))}
+
+\FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ data\_subset1, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{RELPER))}\SpecialCharTok{+}
+  \FunctionTok{geom\_histogram}\NormalTok{()}\SpecialCharTok{+}
+  \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{CURREL)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{religion_project_files/figure-latex/unnamed-chunk-4-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ data\_subset2, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{RELPER))}\SpecialCharTok{+}
+  \FunctionTok{geom\_histogram}\NormalTok{()}\SpecialCharTok{+}
+  \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{CURREL)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{religion_project_files/figure-latex/unnamed-chunk-4-2.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ data\_subset3, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{RELPER))}\SpecialCharTok{+}
+  \FunctionTok{geom\_histogram}\NormalTok{()}\SpecialCharTok{+}
+  \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{CURREL)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{religion_project_files/figure-latex/unnamed-chunk-4-3.pdf}}
+
+\section{Statistical Analysis}\label{statistical-analysis}
+
+To formally investigate the relationships suggested by the exploratory
+data analysis, we apply several statistical methods, including analysis
+of variance (ANOVA), correlation analysis, and multiple linear
+regression. These methods allow us to test for group differences,
+measure associations between variables, and identify key predictors of
+religiosity.
+
+\subsection{Section 1: Group
+Differences}\label{section-1-group-differences}
+
+We begin by examining whether religiosity differs across religious
+traditions.
+
+Hypothesis Test: H0: No difference in religiosity between groups. Ha:
+There is a difference.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data\_filtered }\OtherTok{\textless{}{-}} \FunctionTok{subset}\NormalTok{(data, RELPER }\SpecialCharTok{!=} \DecValTok{5}\NormalTok{)}
+
+\NormalTok{anova\_model }\OtherTok{\textless{}{-}} \FunctionTok{aov}\NormalTok{(RELPER }\SpecialCharTok{\textasciitilde{}}\NormalTok{ CURREL, }\AttributeTok{data =}\NormalTok{ data\_filtered)}
+\FunctionTok{summary}\NormalTok{(anova\_model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                Df Sum Sq Mean Sq F value Pr(>F)    
+## CURREL         13  17394  1338.0    2247 <2e-16 ***
+## Residuals   36590  21785     0.6                   
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data\_filtered }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(CURREL) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{mean\_religiosity =} \FunctionTok{mean}\NormalTok{(RELPER, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+            \AttributeTok{n =} \FunctionTok{n}\NormalTok{()) }\SpecialCharTok{\%\textgreater{}\%}
+   \FunctionTok{arrange}\NormalTok{(mean\_religiosity)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 14 x 3
+##    CURREL          mean_religiosity     n
+##    <fct>                      <dbl> <int>
+##  1 JW                          1.38   113
+##  2 Mormon                      1.46   563
+##  3 Protestant                  1.94 14949
+##  4 Muslim                      2.01   272
+##  5 Catholic                    2.06  6928
+##  6 Orthodox                    2.12   223
+##  7 Hindu                       2.21   246
+##  8 Other Christian             2.39   224
+##  9 Other Religion              2.65    99
+## 10 Buddhist                    2.65   344
+## 11 Uninterpretable             2.72   368
+## 12 Jewish                      2.74   838
+## 13 Other Faith                 3.05   753
+## 14 Unaffiliated                3.48 10684
+\end{verbatim}
+
+Interpret the what we get from anova model result\ldots.
+
+Check Assumptions for ANOVA: 1. Independence 2. Normality within groups
+3. Equal variance
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(anova\_model)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{religion_project_files/figure-latex/unnamed-chunk-6-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{religion_project_files/figure-latex/unnamed-chunk-6-2.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{religion_project_files/figure-latex/unnamed-chunk-6-3.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{religion_project_files/figure-latex/unnamed-chunk-6-4.pdf}}
+
+\ldots{} Interpret assumptions.
+
+\subsection{Section 2: Spirituality vs
+Religiosity}\label{section-2-spirituality-vs-religiosity}
+
+Next, we examine the relationship between spirituality and religiosity,
+as the exploratory analysis suggested that even unaffiliated individuals
+report relatively high levels of spirituality.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cor}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{RELPER, data}\SpecialCharTok{$}\NormalTok{SPIRPER, }\AttributeTok{use=}\StringTok{"complete.obs"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.5395335
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model1 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(RELPER }\SpecialCharTok{\textasciitilde{}}\NormalTok{ SPIRPER, }\AttributeTok{data=}\NormalTok{data)}
+\FunctionTok{summary}\NormalTok{(model1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = RELPER ~ SPIRPER, data = data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3.2940 -0.4755 -0.0816  0.5245  3.1307 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) 1.263160   0.010966   115.2   <2e-16 ***
+## SPIRPER     0.606160   0.004924   123.1   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.8887 on 36906 degrees of freedom
+## Multiple R-squared:  0.2911, Adjusted R-squared:  0.2911 
+## F-statistic: 1.515e+04 on 1 and 36906 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+Choose a plot to see the relationship:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ data) }\SpecialCharTok{+}
+  \FunctionTok{geom\_jitter}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ SPIRPER, }\AttributeTok{y =}\NormalTok{ RELPER), }\AttributeTok{width =} \FloatTok{0.2}\NormalTok{, }\AttributeTok{height =} \FloatTok{0.2}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.3}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"lm"}\NormalTok{, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ SPIRPER, }\AttributeTok{y =}\NormalTok{ RELPER), }\AttributeTok{color =} \StringTok{\textquotesingle{}green\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `geom_smooth()` using formula = 'y ~ x'
+\end{verbatim}
+
+\pandocbounded{\includegraphics[keepaspectratio]{religion_project_files/figure-latex/unnamed-chunk-8-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(data, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =} \FunctionTok{factor}\NormalTok{(SPIRPER), }\AttributeTok{y =}\NormalTok{ RELPER)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_boxplot}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{religion_project_files/figure-latex/unnamed-chunk-8-2.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data }\SpecialCharTok{|\textgreater{}} 
+  \FunctionTok{group\_by}\NormalTok{(SPIRPER) }\SpecialCharTok{|\textgreater{}} 
+  \FunctionTok{summarize}\NormalTok{(}\AttributeTok{mean\_rel =} \FunctionTok{mean}\NormalTok{(RELPER, }\AttributeTok{na.rm=}\ConstantTok{TRUE}\NormalTok{)) }\SpecialCharTok{|\textgreater{}} 
+  \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ SPIRPER, }\AttributeTok{y =}\NormalTok{ mean\_rel)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{religion_project_files/figure-latex/unnamed-chunk-8-3.pdf}}
+
+Interpret\ldots.
+
+\subsection{Section 3: Behavioral
+Predictors}\label{section-3-behavioral-predictors}
+
+While spirituality captures internal beliefs, religiosity may also be
+influenced by observable behaviors such as attendance and prayer. We
+therefore examine whether these behavioral variables are significant
+predictors of religiosity.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{no99 }\OtherTok{\textless{}{-}} \FunctionTok{subset}\NormalTok{(data, RELPER }\SpecialCharTok{!=} \DecValTok{5} \SpecialCharTok{\&}\NormalTok{ ATTNDPERRLS }\SpecialCharTok{!=} \DecValTok{99} \SpecialCharTok{\&}\NormalTok{ PRAY }\SpecialCharTok{!=} \DecValTok{99} \SpecialCharTok{\&}\NormalTok{ PRAC\_B }\SpecialCharTok{!=} \DecValTok{99} \SpecialCharTok{\&}\NormalTok{ PRAC\_D }\SpecialCharTok{!=} \DecValTok{99}\NormalTok{)}
+
+\NormalTok{model2 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(RELPER }\SpecialCharTok{\textasciitilde{}}\NormalTok{ ATTNDPERRLS }\SpecialCharTok{+}\NormalTok{ PRAY }\SpecialCharTok{+}\NormalTok{ PRAC\_B }\SpecialCharTok{+}\NormalTok{ PRAC\_D, }\AttributeTok{data=}\NormalTok{no99)}
+\FunctionTok{summary}\NormalTok{(model2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = RELPER ~ ATTNDPERRLS + PRAY + PRAC_B + PRAC_D, data = no99)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -2.61517 -0.40885 -0.05211  0.40467  2.84929 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  0.705294   0.012384  56.953   <2e-16 ***
+## ATTNDPERRLS  0.215591   0.003086  69.868   <2e-16 ***
+## PRAY         0.186483   0.002190  85.169   <2e-16 ***
+## PRAC_B       0.063182   0.003543  17.833   <2e-16 ***
+## PRAC_D      -0.004961   0.003687  -1.345    0.178    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.6659 on 35842 degrees of freedom
+## Multiple R-squared:  0.5856, Adjusted R-squared:  0.5855 
+## F-statistic: 1.266e+04 on 4 and 35842 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{protestant\_data }\OtherTok{\textless{}{-}} \FunctionTok{subset}\NormalTok{(no99, CURREL }\SpecialCharTok{==} \StringTok{"Protestant"}\NormalTok{)}
+\NormalTok{model\_protestant }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(RELPER }\SpecialCharTok{\textasciitilde{}}\NormalTok{ ATTNDPERRLS }\SpecialCharTok{+}\NormalTok{ PRAY }\SpecialCharTok{+}\NormalTok{ PRAC\_B }\SpecialCharTok{+}\NormalTok{ PRAC\_D,}
+                       \AttributeTok{data =}\NormalTok{ protestant\_data)}
+\FunctionTok{summary}\NormalTok{(model\_protestant)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = RELPER ~ ATTNDPERRLS + PRAY + PRAC_B + PRAC_D, data = protestant_data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.8208 -0.4932 -0.0820  0.3761  2.6364 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) 1.054964   0.016932  62.307  < 2e-16 ***
+## ATTNDPERRLS 0.119634   0.004542  26.341  < 2e-16 ***
+## PRAY        0.102805   0.004215  24.391  < 2e-16 ***
+## PRAC_B      0.067325   0.005328  12.637  < 2e-16 ***
+## PRAC_D      0.018922   0.005331   3.549 0.000387 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.669 on 14560 degrees of freedom
+## Multiple R-squared:  0.2734, Adjusted R-squared:  0.2732 
+## F-statistic:  1370 on 4 and 14560 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{catholic\_data }\OtherTok{\textless{}{-}} \FunctionTok{subset}\NormalTok{(no99, CURREL }\SpecialCharTok{==} \StringTok{"Catholic"}\NormalTok{)}
+\NormalTok{model\_catholic }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(RELPER }\SpecialCharTok{\textasciitilde{}}\NormalTok{ ATTNDPERRLS }\SpecialCharTok{+}\NormalTok{ PRAY }\SpecialCharTok{+}\NormalTok{ PRAC\_B }\SpecialCharTok{+}\NormalTok{ PRAC\_D,}
+                       \AttributeTok{data =}\NormalTok{ catholic\_data)}
+\FunctionTok{summary}\NormalTok{(model\_catholic)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = RELPER ~ ATTNDPERRLS + PRAY + PRAC_B + PRAC_D, data = catholic_data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -2.1253 -0.3578 -0.0318  0.3484  2.8866 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) 0.679348   0.025274  26.879  < 2e-16 ***
+## ATTNDPERRLS 0.174389   0.005501  31.700  < 2e-16 ***
+## PRAY        0.129122   0.004237  30.475  < 2e-16 ***
+## PRAC_B      0.067755   0.006135  11.044  < 2e-16 ***
+## PRAC_D      0.031407   0.007179   4.375 1.23e-05 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.5383 on 6809 degrees of freedom
+## Multiple R-squared:  0.4764, Adjusted R-squared:  0.4761 
+## F-statistic:  1549 on 4 and 6809 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{muslim\_data }\OtherTok{\textless{}{-}} \FunctionTok{subset}\NormalTok{(no99, CURREL }\SpecialCharTok{==} \StringTok{"Muslim"}\NormalTok{)}
+\NormalTok{model\_muslim }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(RELPER }\SpecialCharTok{\textasciitilde{}}\NormalTok{ ATTNDPERRLS }\SpecialCharTok{+}\NormalTok{ PRAY }\SpecialCharTok{+}\NormalTok{ PRAC\_B }\SpecialCharTok{+}\NormalTok{ PRAC\_D,}
+                       \AttributeTok{data =}\NormalTok{ muslim\_data)}
+\FunctionTok{summary}\NormalTok{(model\_muslim)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = RELPER ~ ATTNDPERRLS + PRAY + PRAC_B + PRAC_D, data = muslim_data)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.90472 -0.51176 -0.07219  0.41528  2.37060 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  0.85483    0.13110   6.521 3.54e-10 ***
+## ATTNDPERRLS  0.13021    0.02980   4.369 1.79e-05 ***
+## PRAY         0.16148    0.02480   6.512 3.72e-10 ***
+## PRAC_B       0.06696    0.03438   1.948   0.0525 .  
+## PRAC_D       0.02527    0.03519   0.718   0.4732    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.6871 on 264 degrees of freedom
+## Multiple R-squared:  0.4063, Adjusted R-squared:  0.3973 
+## F-statistic: 45.16 on 4 and 264 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+Hypothesis Testing: H0: Ha:
+
+Interpret the result\ldots{}
+
+Check for Assumptions of Regression: 1. Linearity 2. Nearly normal
+residuals 3. Constant variability
+
+\subsection{Section 4: Political Predictors of
+Religiosity}\label{section-4-political-predictors-of-religiosity}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data\_clean }\OtherTok{\textless{}{-}} \FunctionTok{subset}\NormalTok{(data, RELPER }\SpecialCharTok{!=} \DecValTok{99} \SpecialCharTok{\&}\NormalTok{ ABRTLGL }\SpecialCharTok{!=} \DecValTok{99} \SpecialCharTok{\&}\NormalTok{ GAYMARR }\SpecialCharTok{!=} \DecValTok{99} \SpecialCharTok{\&}\NormalTok{ QB2A }\SpecialCharTok{!=} \DecValTok{99} \SpecialCharTok{\&}\NormalTok{ CHNG\_C)}
+
+\NormalTok{model3 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(RELPER }\SpecialCharTok{\textasciitilde{}}\NormalTok{ ABRTLGL }\SpecialCharTok{+}\NormalTok{ GAYMARR }\SpecialCharTok{+}\NormalTok{ QB2A }\SpecialCharTok{+}\NormalTok{ CHNG\_C, }\AttributeTok{data =}\NormalTok{ data\_clean)}
+\FunctionTok{summary}\NormalTok{(model3)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = RELPER ~ ABRTLGL + GAYMARR + QB2A + CHNG_C, data = data_clean)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -2.1085 -0.6519 -0.1085  0.8915  3.7058 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  3.6830172  0.0156302 235.634   <2e-16 ***
+## ABRTLGL     -0.2550419  0.0065717 -38.809   <2e-16 ***
+## GAYMARR     -0.3135173  0.0077475 -40.467   <2e-16 ***
+## QB2A        -0.0049037  0.0166560  -0.294   0.7684    
+## CHNG_C      -0.0010580  0.0004984  -2.123   0.0338 *  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.921 on 35221 degrees of freedom
+## Multiple R-squared:  0.2378, Adjusted R-squared:  0.2377 
+## F-statistic:  2748 on 4 and 35221 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data\_clean\_spir }\OtherTok{\textless{}{-}} \FunctionTok{subset}\NormalTok{(data, SPIRPER }\SpecialCharTok{!=} \DecValTok{99} \SpecialCharTok{\&}\NormalTok{ ABRTLGL }\SpecialCharTok{!=} \DecValTok{99} \SpecialCharTok{\&}\NormalTok{ GAYMARR }\SpecialCharTok{!=} \DecValTok{99} \SpecialCharTok{\&}\NormalTok{ QB2A }\SpecialCharTok{!=} \DecValTok{99} \SpecialCharTok{\&}\NormalTok{ CHNG\_C)}
+
+\NormalTok{data\_spir }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(SPIRPER }\SpecialCharTok{\textasciitilde{}}\NormalTok{ ABRTLGL }\SpecialCharTok{+}\NormalTok{ GAYMARR }\SpecialCharTok{+}\NormalTok{ QB2A }\SpecialCharTok{+}\NormalTok{ CHNG\_C, }\AttributeTok{data =}\NormalTok{ data\_clean)}
+\FunctionTok{summary}\NormalTok{(data\_spir)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = SPIRPER ~ ABRTLGL + GAYMARR + QB2A + CHNG_C, data = data_clean)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.3393 -0.6044 -0.1779  0.6618  3.5559 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  2.683e+00  1.527e-02 175.670  < 2e-16 ***
+## ABRTLGL     -1.603e-01  6.420e-03 -24.966  < 2e-16 ***
+## GAYMARR     -1.145e-01  7.569e-03 -15.133  < 2e-16 ***
+## QB2A        -6.954e-02  1.627e-02  -4.274 1.93e-05 ***
+## CHNG_C       1.156e-05  4.870e-04   0.024    0.981    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.8998 on 35221 degrees of freedom
+## Multiple R-squared:  0.08104,    Adjusted R-squared:  0.08094 
+## F-statistic: 776.5 on 4 and 35221 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+It would appear that removal of the 99s which represent those who did
+not answer made a substantial difference on the fit of the model.
+Furthermore, support for gay marriage predicts religiosity well, as does
+support for transgender individuals. However, acceptance of
+homosexuality is an incredibly poor predictor of religiosity in the body
+public.
+
+Alternatively, support for abortion, homosexuality, and gay marriage
+predicts \emph{spirituality} but support for transgender individuals
+does not predict \emph{spirituality}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data\_clean2 }\OtherTok{\textless{}{-}} \FunctionTok{subset}\NormalTok{(data, RELPER }\SpecialCharTok{!=} \DecValTok{99} \SpecialCharTok{\&}\NormalTok{ ABRTLGL }\SpecialCharTok{!=} \DecValTok{99} \SpecialCharTok{\&}\NormalTok{ GAYMARR }\SpecialCharTok{!=} \DecValTok{99} \SpecialCharTok{\&}\NormalTok{ QB2A }\SpecialCharTok{!=} \DecValTok{99} \SpecialCharTok{\&}\NormalTok{ CHNG\_C }\SpecialCharTok{!=} \DecValTok{99}\NormalTok{)}
+
+
+\NormalTok{catholic\_pol }\OtherTok{\textless{}{-}}\NormalTok{ data\_clean2 }\SpecialCharTok{|\textgreater{}} \FunctionTok{filter}\NormalTok{(CURREL }\SpecialCharTok{==} \StringTok{"Catholic"}\NormalTok{)}
+\NormalTok{catholic\_polly }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(RELPER }\SpecialCharTok{\textasciitilde{}}\NormalTok{ ABRTLGL }\SpecialCharTok{+}\NormalTok{ GAYMARR }\SpecialCharTok{+}\NormalTok{ QB2A }\SpecialCharTok{+}\NormalTok{ CHNG\_C, }\AttributeTok{data =}\NormalTok{ catholic\_pol)}
+\FunctionTok{summary}\NormalTok{(catholic\_polly)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = RELPER ~ ABRTLGL + GAYMARR + QB2A + CHNG_C, data = catholic_pol)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.5059 -0.4432 -0.1394  0.4941  3.5568 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  2.843525   0.032614  87.186   <2e-16 ***
+## ABRTLGL     -0.225040   0.011091 -20.290   <2e-16 ***
+## GAYMARR     -0.137512   0.013897  -9.895   <2e-16 ***
+## QB2A         0.026926   0.027925   0.964    0.335    
+## CHNG_C      -0.001988   0.011860  -0.168    0.867    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.7036 on 6512 degrees of freedom
+## Multiple R-squared:  0.1519, Adjusted R-squared:  0.1514 
+## F-statistic: 291.6 on 4 and 6512 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{protestant\_pol }\OtherTok{\textless{}{-}}\NormalTok{ data\_clean2 }\SpecialCharTok{|\textgreater{}} \FunctionTok{filter}\NormalTok{(CURREL }\SpecialCharTok{==} \StringTok{"Protestant"}\NormalTok{)}
+\NormalTok{protestant\_polly }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(RELPER }\SpecialCharTok{\textasciitilde{}}\NormalTok{ ABRTLGL }\SpecialCharTok{+}\NormalTok{ GAYMARR }\SpecialCharTok{+}\NormalTok{ QB2A }\SpecialCharTok{+}\NormalTok{ CHNG\_C, }\AttributeTok{data =}\NormalTok{ protestant\_pol)}
+\FunctionTok{summary}\NormalTok{(protestant\_polly)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = RELPER ~ ABRTLGL + GAYMARR + QB2A + CHNG_C, data = protestant_pol)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.3114 -0.6037 -0.0915  0.3070  3.3963 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  2.579250   0.026161  98.591  < 2e-16 ***
+## ABRTLGL     -0.089316   0.008836 -10.108  < 2e-16 ***
+## GAYMARR     -0.124174   0.010350 -11.998  < 2e-16 ***
+## QB2A        -0.064033   0.020881  -3.067  0.00217 ** 
+## CHNG_C       0.003236   0.010320   0.314  0.75384    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.7991 on 14034 degrees of freedom
+## Multiple R-squared:  0.07049,    Adjusted R-squared:  0.07023 
+## F-statistic: 266.1 on 4 and 14034 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{unaffiliated\_pol }\OtherTok{\textless{}{-}}\NormalTok{ data\_clean2 }\SpecialCharTok{|\textgreater{}} \FunctionTok{filter}\NormalTok{(CURREL }\SpecialCharTok{==} \StringTok{"Unaffiliated"}\NormalTok{)}
+\NormalTok{unaffiliated\_polly }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(RELPER }\SpecialCharTok{\textasciitilde{}}\NormalTok{ ABRTLGL }\SpecialCharTok{+}\NormalTok{ GAYMARR }\SpecialCharTok{+}\NormalTok{ QB2A }\SpecialCharTok{+}\NormalTok{ CHNG\_C, }\AttributeTok{data =}\NormalTok{ unaffiliated\_pol)}
+\FunctionTok{summary}\NormalTok{(unaffiliated\_polly)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = RELPER ~ ABRTLGL + GAYMARR + QB2A + CHNG_C, data = unaffiliated_pol)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -2.7160 -0.5340  0.2840  0.4403  2.2287 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  4.159420   0.029526 140.874   <2e-16 ***
+## ABRTLGL     -0.156293   0.010387 -15.046   <2e-16 ***
+## GAYMARR     -0.172493   0.013189 -13.079   <2e-16 ***
+## QB2A        -0.023650   0.030521  -0.775    0.438    
+## CHNG_C      -0.091006   0.009786  -9.300   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.6885 on 10420 degrees of freedom
+## Multiple R-squared:  0.1083, Adjusted R-squared:  0.108 
+## F-statistic: 316.4 on 4 and 10420 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+While support for abortion, same sex marriage, and homosexuality is a
+statistically significant predictor of religiousity in Catholics and
+people who are unaffiliated, support for these causes is not
+statistically significant in predicting religiosity in Protestants.
+Interstingly, greater acceptance of transgender individuals cannot be
+used to predict religiosity in people who are unaffiliated.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data\_clean3 }\OtherTok{\textless{}{-}} \FunctionTok{subset}\NormalTok{(data, RELPER }\SpecialCharTok{!=} \DecValTok{99} \SpecialCharTok{\&}\NormalTok{ CHNG\_A }\SpecialCharTok{!=} \DecValTok{99} \SpecialCharTok{\&}\NormalTok{ CHNG\_B }\SpecialCharTok{!=} \DecValTok{99} \SpecialCharTok{\&}\NormalTok{ DIVRELPOP }\SpecialCharTok{!=} \DecValTok{99} \SpecialCharTok{\&}\NormalTok{ DIVRACPOP }\SpecialCharTok{!=} \DecValTok{99} \SpecialCharTok{\&}\NormalTok{ QB2C }\SpecialCharTok{!=} \DecValTok{99}\NormalTok{)}
+
+\NormalTok{catholic\_pol2 }\OtherTok{\textless{}{-}}\NormalTok{ data\_clean3 }\SpecialCharTok{|\textgreater{}} \FunctionTok{filter}\NormalTok{(CURREL }\SpecialCharTok{==} \StringTok{"Catholic"}\NormalTok{)}
+\NormalTok{catholic\_polly2 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(RELPER }\SpecialCharTok{\textasciitilde{}}\NormalTok{ CHNG\_A }\SpecialCharTok{+}\NormalTok{ CHNG\_B }\SpecialCharTok{+}\NormalTok{ DIVRELPOP }\SpecialCharTok{+}\NormalTok{ DIVRACPOP }\SpecialCharTok{+}\NormalTok{ QB2C, }\AttributeTok{data =}\NormalTok{ catholic\_pol)}
+\FunctionTok{summary}\NormalTok{(catholic\_polly2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = RELPER ~ CHNG_A + CHNG_B + DIVRELPOP + DIVRACPOP + 
+##     QB2C, data = catholic_pol)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.28838 -0.09125 -0.08980  0.90463  3.14626 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  2.0916628  0.0108237 193.249   <2e-16 ***
+## CHNG_A       0.0007251  0.0009820   0.738   0.4603    
+## CHNG_B      -0.0020007  0.0015930  -1.256   0.2092    
+## DIVRELPOP   -0.0023070  0.0013777  -1.675   0.0941 .  
+## DIVRACPOP    0.0020643  0.0015143   1.363   0.1729    
+## QB2C        -0.0001745  0.0008096  -0.216   0.8294    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.7637 on 6511 degrees of freedom
+## Multiple R-squared:  0.000831,   Adjusted R-squared:  6.374e-05 
+## F-statistic: 1.083 on 5 and 6511 DF,  p-value: 0.3674
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data\_clean3 }\OtherTok{\textless{}{-}} \FunctionTok{subset}\NormalTok{(data, RELPER }\SpecialCharTok{!=} \DecValTok{99} \SpecialCharTok{\&}\NormalTok{ CHNG\_A }\SpecialCharTok{!=} \DecValTok{99} \SpecialCharTok{\&}\NormalTok{ CHNG\_B }\SpecialCharTok{!=} \DecValTok{99} \SpecialCharTok{\&}\NormalTok{ DIVRELPOP }\SpecialCharTok{!=} \DecValTok{99} \SpecialCharTok{\&}\NormalTok{ DIVRACPOP }\SpecialCharTok{!=} \DecValTok{99} \SpecialCharTok{\&}\NormalTok{ QB2C }\SpecialCharTok{!=} \DecValTok{99}\NormalTok{)}
+
+\NormalTok{protestant\_pol2 }\OtherTok{\textless{}{-}}\NormalTok{ data\_clean3 }\SpecialCharTok{|\textgreater{}} \FunctionTok{filter}\NormalTok{(CURREL }\SpecialCharTok{==} \StringTok{"Protestant"}\NormalTok{)}
+\NormalTok{protestant\_polly2 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(RELPER }\SpecialCharTok{\textasciitilde{}}\NormalTok{ CHNG\_A }\SpecialCharTok{+}\NormalTok{ CHNG\_B }\SpecialCharTok{+}\NormalTok{ DIVRELPOP }\SpecialCharTok{+}\NormalTok{ DIVRACPOP }\SpecialCharTok{+}\NormalTok{ QB2C, }\AttributeTok{data =}\NormalTok{ catholic\_pol)}
+\FunctionTok{summary}\NormalTok{(protestant\_polly2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = RELPER ~ CHNG_A + CHNG_B + DIVRELPOP + DIVRACPOP + 
+##     QB2C, data = catholic_pol)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.28838 -0.09125 -0.08980  0.90463  3.14626 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  2.0916628  0.0108237 193.249   <2e-16 ***
+## CHNG_A       0.0007251  0.0009820   0.738   0.4603    
+## CHNG_B      -0.0020007  0.0015930  -1.256   0.2092    
+## DIVRELPOP   -0.0023070  0.0013777  -1.675   0.0941 .  
+## DIVRACPOP    0.0020643  0.0015143   1.363   0.1729    
+## QB2C        -0.0001745  0.0008096  -0.216   0.8294    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.7637 on 6511 degrees of freedom
+## Multiple R-squared:  0.000831,   Adjusted R-squared:  6.374e-05 
+## F-statistic: 1.083 on 5 and 6511 DF,  p-value: 0.3674
+\end{verbatim}
+
+Support for a growing immigrant population is not predictive of
+religiousity, but
+
+\subsection{Full Model, Search for the Best
+Model}\label{full-model-search-for-the-best-model}
+
+Finally, we construct a comprehensive model that incorporates
+spirituality, behavioral measures, belief variables, and religious
+affiliation to determine which factors are most important in predicting
+religiosity.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{final\_model }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(RELPER }\SpecialCharTok{\textasciitilde{}}\NormalTok{ SPIRPER }\SpecialCharTok{+}\NormalTok{ ATTNDPERRLS }\SpecialCharTok{+}\NormalTok{ PRAY }\SpecialCharTok{+}\NormalTok{ PRAC\_B }\SpecialCharTok{+}\NormalTok{ PRAC\_D }\SpecialCharTok{+}\NormalTok{ GOD }\SpecialCharTok{+}\NormalTok{ HVN }\SpecialCharTok{+}\NormalTok{ HLL }\SpecialCharTok{+}\NormalTok{ CURREL, }\AttributeTok{data=}\NormalTok{data)}
+\FunctionTok{summary}\NormalTok{(final\_model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = RELPER ~ SPIRPER + ATTNDPERRLS + PRAY + PRAC_B + 
+##     PRAC_D + GOD + HVN + HLL + CURREL, data = data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3.0495 -0.6245 -0.0636  0.3609  3.6930 
+## 
+## Coefficients:
+##                         Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)            1.2678354  0.0098796 128.329  < 2e-16 ***
+## SPIRPER                0.3752479  0.0044903  83.568  < 2e-16 ***
+## ATTNDPERRLS            0.0090659  0.0005188  17.475  < 2e-16 ***
+## PRAY                   0.0055012  0.0004691  11.726  < 2e-16 ***
+## PRAC_B                 0.0020458  0.0004775   4.284 1.84e-05 ***
+## PRAC_D                -0.0006579  0.0005129  -1.283 0.199628    
+## GOD                    0.0006985  0.0003299   2.117 0.034239 *  
+## HVN                    0.0007836  0.0002839   2.760 0.005781 ** 
+## HLL                   -0.0004881  0.0002564  -1.904 0.056983 .  
+## CURRELCatholic         0.0285637  0.0106052   2.693 0.007077 ** 
+## CURRELMormon          -0.3601116  0.0312536 -11.522  < 2e-16 ***
+## CURRELOrthodox         0.0900067  0.0489390   1.839 0.065900 .  
+## CURRELJW              -0.4304608  0.0688268  -6.254 4.04e-10 ***
+## CURRELOther Christian  0.5166936  0.0488330  10.581  < 2e-16 ***
+## CURRELJewish           0.5405888  0.0258636  20.902  < 2e-16 ***
+## CURRELMuslim          -0.0588955  0.0445109  -1.323 0.185787    
+## CURRELBuddhist         0.5906092  0.0395321  14.940  < 2e-16 ***
+## CURRELHindu            0.1577924  0.0467441   3.376 0.000737 ***
+## CURRELOther Religion   0.6953460  0.0734584   9.466  < 2e-16 ***
+## CURRELOther Faith      1.1236508  0.0271105  41.447  < 2e-16 ***
+## CURRELUnaffiliated     1.1451878  0.0101093 113.280  < 2e-16 ***
+## CURRELUninterpretable  0.6820045  0.0367126  18.577  < 2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.7284 on 36886 degrees of freedom
+## Multiple R-squared:  0.524,  Adjusted R-squared:  0.5237 
+## F-statistic:  1934 on 21 and 36886 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+Check for Assumptions of Regression: 1. Linearity 2. Nearly normal
+residuals 3. Constant variability
+
+Dropping the variables that has p-value higher than 0.05. After dropping
+will model be better?
+
+\end{document}
