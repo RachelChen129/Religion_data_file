@@ -21,6 +21,8 @@ This dataset has information about over 36,000 individuals, with columns includi
 
 ### Ideas and Questions:
 
+
+Remove?
 Some potential areas we could explore with this data include seeing which variables are most associated with religiosity.
 
 1) Test people's faithfulness as predictors or stand-ins. How important is religion in your life? How important is this to you when making decisions about right and wrong?
@@ -38,8 +40,7 @@ Some potential areas we could explore with this data include seeing which variab
 7) How marriage affect the religion?
 
 8) How support for abortion vs gay marriage as a predictor for party affiliation?
-
-
+Remove?
 
 # Introduction
 The dataset that we're working with comes from the PEW Research Center. The survey was intended to get responses from as many Americans as possible, offering surveys in English and Spanish in all 50 states, with online, paper and phone format options. The data contains information about the religious, political, spiritual and social background of those surveyed. The data can be accessed at the following link: https://www.pewresearch.org/dataset/2023-24-religious-landscape-study-rls-dataset/
@@ -60,6 +61,15 @@ HLL (is there a hell)
 PRAY (frequency of prayer in personal life)
 PRAC_B (how often do you read scripture outside of worship service)
 PRAC_D (how often do you share your beliefs with others)
+
+Political Correlation was also observed. 
+Variables included:
+ABRTLGL (support for legalization of abortion in all or most cases)
+CHNG_A ()
+CHNG_B 
+DIVRELPOP 
+DIVRACPOP
+QB2C, 
 
 First, we turn CURREL into a factor so that we can create "bins" of how many people fall into each religious tradition
 
@@ -276,11 +286,24 @@ catholic_pol2 <- data_clean3 |> filter(CURREL == "Catholic")
 catholic_polly2 <- lm(RELPER ~ CHNG_A + CHNG_B + DIVRELPOP + DIVRACPOP + QB2C, data = catholic_pol)
 summary(catholic_polly2)
 
-data_clean3 <- subset(data, RELPER != 99 & CHNG_A != 99 & CHNG_B != 99 & DIVRELPOP != 99 & DIVRACPOP != 99 & QB2C != 99)
-
 protestant_pol2 <- data_clean3 |> filter(CURREL == "Protestant")
-protestant_polly2 <- lm(RELPER ~ CHNG_A + CHNG_B + DIVRELPOP + DIVRACPOP + QB2C, data = catholic_pol)
+protestant_polly2 <- lm(RELPER ~ CHNG_A + CHNG_B + DIVRELPOP + DIVRACPOP + QB2C, data = protestant_pol2)
 summary(protestant_polly2)
+
+unaffiliated_pol2 <- data_clean3 |> filter(CURREL == "Unaffiliated")
+unaffiliated_polly2 <- lm(RELPER ~ ABRTLGL + GAYMARR + QB2A + CHNG_C, data = unaffiliated_pol2)
+summary(unaffiliated_polly2)
+
+vars_to_plot <- c("RELPER", "CHNG_A", "CHNG_B", "DIVRELPOP", "DIVRACPOP", "QB2C")
+
+ggpairs(data_clean3, 
+        columns = vars_to_plot,
+        title = "Correlation Matrix for RELPER Predictors",
+        upper = list(continuous = wrap("cor", size = 4)),    # Shows correlation coefficients
+        lower = list(continuous = "smooth_loess"),           # Adds a trend line to scatter plots
+        diag = list(continuous = "densityDiag")              # Shows the distribution of each variable
+) +
+theme_minimal()
 
 ```
 
