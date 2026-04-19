@@ -134,8 +134,16 @@ H0: No difference in religiosity between groups.
 Ha: There is a difference.
 
 ```{r}
-anova_model <- aov(RELPER ~ CURREL, data=data)
+data_filtered <- subset(data, RELPER != 5)
+
+anova_model <- aov(RELPER ~ CURREL, data = data_filtered)
 summary(anova_model)
+
+data_filtered %>%
+  group_by(CURREL) %>%
+  summarise(mean_religiosity = mean(RELPER, na.rm = TRUE),
+            n = n()) %>%
+   arrange(mean_religiosity)
 ```
 
 Interpret the what we get from anova model result....
@@ -187,10 +195,25 @@ Interpret....
 While spirituality captures internal beliefs, religiosity may also be influenced by observable behaviors such as attendance and prayer. We therefore examine whether these behavioral variables are significant predictors of religiosity.
 
 ```{r}
-no99 <- subset(data, RELPER != 99 & ATTNDPERRLS != 99 & PRAY != 99 & PRAC_B != 99 & PRAC_D != 99)
+no99 <- subset(data, RELPER != 5 & ATTNDPERRLS != 99 & PRAY != 99 & PRAC_B != 99 & PRAC_D != 99)
 
 model2 <- lm(RELPER ~ ATTNDPERRLS + PRAY + PRAC_B + PRAC_D, data=no99)
 summary(model2)
+
+protestant_data <- subset(no99, CURREL == "Protestant")
+model_protestant <- lm(RELPER ~ ATTNDPERRLS + PRAY + PRAC_B + PRAC_D,
+                       data = protestant_data)
+summary(model_protestant)
+
+catholic_data <- subset(no99, CURREL == "Catholic")
+model_catholic <- lm(RELPER ~ ATTNDPERRLS + PRAY + PRAC_B + PRAC_D,
+                       data = catholic_data)
+summary(model_catholic)
+
+muslim_data <- subset(no99, CURREL == "Muslim")
+model_muslim <- lm(RELPER ~ ATTNDPERRLS + PRAY + PRAC_B + PRAC_D,
+                       data = muslim_data)
+summary(model_muslim)
 ```
 Hypothesis Testing:
 H0:
