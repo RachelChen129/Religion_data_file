@@ -28,16 +28,27 @@ After trimming down our dataset to include only those with useful information an
 # Exploratory Data Analysis
 
 In our dataset, the most important variables are:
+
 RELTRAD (religious affiliation)
+
 CURREL (same as before but collapses evangelical, mainline and black prot into one group)
+
 RELPER (how religious the respondent is, 1-4)
+
 SPIRPER (how spiritual the respondent is, 1-4)
+
 ATTNDPERRLS (how often they attend in person)
+
 GOD (belief in God)
+
 HVN (is there a heaven)
+
 HLL (is there a hell)
+
 PRAY (frequency of prayer in personal life)
+
 PRAC_B (how often do you read scripture outside of worship service)
+
 PRAC_D (how often do you share your beliefs with others)
 
 First, we turn CURREL into a factor so that we can create "bins" of how many people fall into each religious tradition
