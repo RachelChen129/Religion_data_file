@@ -2,14 +2,16 @@
 title: "religion_project"
 author: "Rachel Chen, Topher Hanagan, Jakob Hildebrandt"
 date: "2026-03-29"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r, message=FALSE}
+```{r, message=FALSE, include=FALSE}
 library(readr)
 library(dplyr)
 library(tidyverse)
@@ -17,34 +19,11 @@ library(tidyverse)
 data <- read_csv("Test.csv")
 ```
 
-This dataset has information about over 36,000 individuals, with columns including information about the state or origin, happiness, questions about attitudes about other religions and immigrants, religious teachings, perceived spirituality/religiosity, marriage status, political leaning, family income, among others. This data comes from the Pew Research Center, a reputable source for surveys on the American population.
-
-### Ideas and Questions:
-
-Some potential areas we could explore with this data include seeing which variables are most associated with religiosity.
-
-1) Test people's faithfulness as predictors or stand-ins. How important is religion in your life? How important is this to you when making decisions about right and wrong?
-
-2) Are you personally a member of a church, synagogue, mosque, temple, or other house of worship?
-
-3) Look at people who consider themselves religious vs actually attend religious services. 
-
-4) Try to find the correlation between consider yourself religious and attendance. Could also use a composite for praying and attendance to as a stand-in for "religiosity"
-
-5) Check how the religion related with family or parents. How parents religion affect your religion? Is father religion or mother religion same as your?
-
-6) How religious based of age(birth)? Try to find out did the state affect how you religious?
-
-7) How marriage affect the religion?
-
-8) How support for abortion vs gay marriage as a predictor for party affiliation?
-
-
 
 # Introduction
 The dataset that we're working with comes from the PEW Research Center. The survey was intended to get responses from as many Americans as possible, offering surveys in English and Spanish in all 50 states, with online, paper and phone format options. The data contains information about the religious, political, spiritual and social background of those surveyed. The data can be accessed at the following link: https://www.pewresearch.org/dataset/2023-24-religious-landscape-study-rls-dataset/
-After trimming down our dataset to include only those with useful information and those without all NA values, we were left with 93 columns. Our driving question is twofold: 1) How well can we predict religiosity based on factors including church attendance, family relationships, marriage, political opinions.
-2) Which factors are most effective in predicting religiousity of individuals. Does this vary by religious affiliation.
+After trimming down our dataset to include only those with useful information and those without all NA values, we were left with 93 columns. Our driving question is twofold: 1) How well can we predict religiosity and spirituality based on factors including church attendance, family relationships, marriage, political opinions, religious affiliation and devotion, etc.?
+2) Which factors are most effective in predicting religiosity/spirituality of individuals? Does this vary by religious affiliation?
 
 # Exploratory Data Analysis
 
@@ -74,7 +53,8 @@ From here, we can look at the relationship between each of the other variables a
 First, before trying to plot the data, we noticed that there was a much larger number of those who identified as Catholic, Protestant or Unaffiliated than anything else, so we split the histogram facet_wrap into two to account for this (then split it again to account for the much larger prevalence of Mormon, Jewish and Other Faith than all the other religious identities combined) so that the spread of each religion across the different values would be clear. This splitting up of the religious categories will prove useful throughout the duration of the EDA section.
 
 
-Looking at the correlation between each specific faith and personal spirituality (1=most spiritual, 4= least spiritual, 5=don't know/refused), we notice a few trends: most faiths seemed to have the largest spike at either 1 or 2. Interestingly, the Unaffiliated category also has the largest spikes around 1 and 2, and not 4. This could be that many people who identified as Unaffiliated, although they did not profess a specific religion, still considered themselves spiritual in some sense.
+Looking at the correlation between each specific faith and personal spirituality (1=most spiritual, 4= least spiritual, 5=don't know/refused), we notice a few trends: most faiths seemed to have the largest spike at either 1 or 2. Interestingly, the Unaffiliated category also has the largest spikes around 1 and 2, and not 4. This could be that many people who identified as Unaffiliated, although they did not profess a specific religion, still considered themselves spiritual (spiritual but not religious).
+
 ```{r, message=FALSE}
 data$SPIRPER[data$SPIRPER == 99] <- 5
 
@@ -97,8 +77,7 @@ ggplot(data = data_subset3, aes(x=SPIRPER))+
 ```
 
 
-
-The spread for religiosity is shifted more to the higher values than spirituality: there were only two religions where the plurality (largest spike) was 1 (most religious).
+The spread for religiosity is shifted more to the higher (less religious) values than spirituality: there were only two religions where the plurality (largest spike) was 1 (most religious).
 
 ```{r, message=FALSE}
 data$RELPER[data$RELPER == 99] <- 5
