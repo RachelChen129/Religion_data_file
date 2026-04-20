@@ -66,7 +66,7 @@ BIRTHDECADE (birth decade)
 
 HISP (hispanic or not)
 
-RACEMB (race)
+RACECMB (race)
 
 EDUCREC (highest educational attainment)
 
@@ -412,12 +412,7 @@ Finally, we construct a comprehensive model that incorporates spirituality, beha
 
 ```{r}
 
-
-data_clean4 <- data |>
-  filter(CURREL != "Muslim")
-
-
-final_model <- lm(RELPER ~ SPIRPER + ATTNDPERRLS + PRAY + PRAC_B + PRAC_D + GOD + HVN + HLL + CURREL, data=dat_clean4)
+final_model <- lm(RELPER ~ RELTRAD+CURREL+RELPER+ATTNDPERRLS+GOD+HVN+HLL+PRAY+PRAC_D+PRAC_B+ABRTLGL+FRMREL+CHATTEND+MARITAL+SCPRY2+BIRTHDECADE+HISP+RACECMB+EDUCREC+E2+EMPLSIT+USGEN+REG+PARTY+IDEO+INC_SDT1+GENDER, data=data)
 
 summary(final_model)
 ```
