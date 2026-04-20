@@ -20,28 +20,6 @@ library(GGally)
 data <- read_csv("Test.csv")
 ```
 
-This dataset has information about over 36,000 individuals, with columns including information about the state or origin, happiness, questions about attitudes about other religions and immigrants, religious teachings, perceived spirituality/religiosity, marriage status, political leaning, family income, among others. This data comes from the Pew Research Center, a reputable source for surveys on the American population.
-
-### Ideas and Questions:
-
-Some potential areas we could explore with this data include seeing which variables are most associated with religiosity.
-
-1) Test people's faithfulness as predictors or stand-ins. How important is religion in your life? How important is this to you when making decisions about right and wrong?
-
-2) Are you personally a member of a church, synagogue, mosque, temple, or other house of worship?
-
-3) Look at people who consider themselves religious vs actually attend religious services. 
-
-4) Try to find the correlation between consider yourself religious and attendance. Could also use a composite for praying and attendance to as a stand-in for "religiosity"
-
-5) Check how the religion related with family or parents. How parents religion affect your religion? Is father religion or mother religion same as your?
-
-6) How religious based of age(birth)? Try to find out did the state affect how you religious?
-
-7) How marriage affect the religion?
-
-8) How support for abortion vs gay marriage as a predictor for party affiliation?
-
 # Introduction
 
 The dataset that we're working with comes from the PEW Research Center. The survey was intended to get responses from as many Americans as possible, offering surveys in English and Spanish in all 50 states, with online, paper and phone format options. The data contains information about the religious, political, spiritual and social background of those surveyed. The data can be accessed at the following link: https://www.pewresearch.org/dataset/2023-24-religious-landscape-study-rls-dataset/
@@ -50,7 +28,7 @@ After trimming down our dataset to include only those with useful information an
 
 # Exploratory Data Analysis
 
-In our dataset, the most important variables are:
+In our dataset, many variables were unusable due to lack of data or relevance to our research question. We narrowed our dataset down to 93 variables, of which the 28 most important are:
 
 RELTRAD (religious affiliation)
 
@@ -74,24 +52,50 @@ PRAC_B (how often do you read scripture outside of worship service)
 
 PRAC_D (how often do you share your beliefs with others)
 
-Political Correlation was also observed. 
-Variables included:
 ABRTLGL (support for legalization of abortion in all or most cases)
-CHNG_A ()
-CHNG_B 
-DIVRELPOP 
-DIVRACPOP
-QB2C, 
 
-First, we turn CURREL into a factor so that we can create "bins" of how many people fall into each religious tradition
+FRMREL (religion of family)
+
+CHATTEND (how often you attended religious services growing up)
+
+MARITAL (marital status)
+
+SCPRY2 (prayers in public schools)
+
+BIRTHDECADE (birth decade)
+
+HISP (hispanic or not)
+
+RACEMB (race)
+
+EDUCREC (highest educational attainment)
+
+E2 (currently enrolled in school)
+
+EMPLSIT (current work situation)
+
+USGEN (immigrant or child or immigrants)
+
+REG (registered to vote or not)
+
+PARTY (political party affiliation)
+
+IDEO (political views)
+
+INC_SDT1 (income bracket)
+
+GENDER (male or female or other)
+
+Many other variables exists and are used in this paper, but these are a sampling of many that are related to the question of religiosity and spirituality.
+
+First, we turned CURREL into a factor so that we can create "bins" of how many people fall into each religious tradition.
 
 ```{r}
 data <- data |> mutate(CURREL = factor(CURREL, levels=c(1000,10000,20000,30000,40001,40002,50000,60000,70000,80000,90001,90002,100000,900000),
                                        labels=c("Protestant","Catholic", "Mormon", "Orthodox", "JW", "Other Christian", "Jewish", "Muslim", "Buddhist", "Hindu", "Other Religion", "Other Faith", "Unaffiliated", "Uninterpretable")))
 ```
 
-From here, we can look at the relationship between each of the other variables and religion.
-
+From there, we were able to look at the relationship between some of the other variables and religion.
 
 First, before trying to plot the data, we noticed that there was a much larger number of those who identified as Catholic, Protestant or Unaffiliated than anything else, so we split the histogram facet_wrap into two to account for this (then split it again to account for the much larger prevalence of Mormon, Jewish and Other Faith than all the other religious identities combined) so that the spread of each religion across the different values would be clear. This splitting up of the religious categories will prove useful throughout the duration of the EDA section.
 
@@ -119,7 +123,6 @@ ggplot(data = data_subset3, aes(x=SPIRPER))+
   facet_wrap(~CURREL)
 ```
 
-
 The spread for religiosity is shifted more to the higher (less religious) values than spirituality: there were only two religions where the plurality (largest spike) was 1 (most religious).
 
 ```{r, message=FALSE}
@@ -142,6 +145,9 @@ ggplot(data = data_subset3, aes(x=RELPER))+
   geom_histogram()+
   facet_wrap(~CURREL)
 ```
+
+
+
 
 # Statistical Analysis
 
@@ -351,8 +357,6 @@ data_clean_spir <- subset(data, SPIRPER != 99 & ABRTLGL != 99 & GAYMARR != 99 & 
 
 data_spir <- lm(SPIRPER ~ ABRTLGL + GAYMARR + QB2A + CHNG_C, data = data_clean)
 summary(data_spir)
-
-
 ```
 It would appear that removal of the 99s which represent those who did not answer made a substantial difference on the fit of the model. 
 Furthermore, support for gay marriage predicts religiosity well, as does support for transgender individuals. However, acceptance of homosexuality is an incredibly poor predictor of religiosity in the body public. 
@@ -380,7 +384,7 @@ summary(unaffiliated_polly)
 ```
 
 
-While support for abortion, same sex marriage, and homosexuality is a statistically significant predictor of religiousity in Catholics and people who are unaffiliated, support for these causes is not statistically significant in predicting religiosity in Protestants. Interstingly, greater acceptance of transgender individuals cannot be used to predict religiosity in people who are unaffiliated. 
+While support for abortion, same sex marriage, and homosexuality is a statistically significant predictor of religiosity in Catholics and people who are unaffiliated, support for these causes is not statistically significant in predicting religiosity in Protestants. Interestingly, greater acceptance of transgender individuals cannot be used to predict religiosity in people who are unaffiliated. 
 
 ```{r}
 data_clean3 <- subset(data, RELPER != 99 & CHNG_A != 99 & CHNG_B != 99 & DIVRELPOP != 99 & DIVRACPOP != 99 & QB2C != 99)
@@ -417,7 +421,7 @@ Support for a growing immigrant population is not predictive of religiousity, bu
 Finally, we construct a comprehensive model that incorporates spirituality, behavioral measures, belief variables, and religious affiliation to determine which factors are most important in predicting religiosity.
 
 ```{r}
-final_model <- lm(RELPER ~ SPIRPER + ATTNDPERRLS + PRAY + PRAC_B + PRAC_D + GOD + HVN + HLL + CURREL, data=data)
+final_model <- lm(RELPER ~ SPIRPER + ATTNDPERRLS + PRAY + PRAC_B + PRAC_D + GOD + HVN + HLL + CURREL+ , data=data)
 summary(final_model)
 ```
 
