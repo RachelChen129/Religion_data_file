@@ -216,7 +216,7 @@ Check Assumptions for ANOVA:
 # Figure: Distribution of religiosity scores by religious tradition
 
 ggplot(data_filtered, aes(x = CURREL, y = RELPER)) +
-  geom_boxplot(fill = "green") +
+  geom_boxplot(fill = "tan") +
   coord_flip() +
   theme_minimal() +
   labs(
@@ -401,16 +401,6 @@ unaffiliated_pol2 <- data_clean3 |> filter(CURREL == "Unaffiliated")
 unaffiliated_polly2 <- lm(RELPER ~ ABRTLGL + GAYMARR + QB2A + CHNG_C, data = unaffiliated_pol2)
 summary(unaffiliated_polly2)
 
-vars_to_plot <- c("RELPER", "CHNG_A", "CHNG_B", "DIVRELPOP", "DIVRACPOP", "QB2C")
-
-ggpairs(data_clean3, 
-        columns = vars_to_plot,
-        title = "Correlation Matrix for RELPER Predictors",
-        upper = list(continuous = wrap("cor", size = 4)),    # Shows correlation coefficients
-        lower = list(continuous = "smooth_loess"),           # Adds a trend line to scatter plots
-        diag = list(continuous = "densityDiag")              # Shows the distribution of each variable
-) +
-theme_minimal()
 
 ```
 
@@ -421,9 +411,19 @@ Support for a growing immigrant population is not predictive of religiousity, bu
 Finally, we construct a comprehensive model that incorporates spirituality, behavioral measures, belief variables, and religious affiliation to determine which factors are most important in predicting religiosity.
 
 ```{r}
-final_model <- lm(RELPER ~ SPIRPER + ATTNDPERRLS + PRAY + PRAC_B + PRAC_D + GOD + HVN + HLL + CURREL+ , data=data)
+
+
+data_clean4 <- data |>
+  filter(CURREL != "Muslim")
+
+
+final_model <- lm(RELPER ~ SPIRPER + ATTNDPERRLS + PRAY + PRAC_B + PRAC_D + GOD + HVN + HLL + CURREL, data=dat_clean4)
+
 summary(final_model)
 ```
+
+The preliminary data provides strong data for the model provided. With and R^2 of 0.5237, we have moderate confidence that this model can predict religiosity in individuals. An R^2 of 0.5237 tells us that only 52% of variance can be explained by the model. 
+
 
 Check for Assumptions of Regression:
 1. Linearity
