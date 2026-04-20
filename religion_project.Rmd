@@ -15,6 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(readr)
 library(dplyr)
 library(tidyverse)
+library(GGally)
 # import data
 data <- read_csv("Test.csv")
 ```
@@ -41,9 +42,8 @@ Some potential areas we could explore with this data include seeing which variab
 
 8) How support for abortion vs gay marriage as a predictor for party affiliation?
 
-
-
 # Introduction
+
 The dataset that we're working with comes from the PEW Research Center. The survey was intended to get responses from as many Americans as possible, offering surveys in English and Spanish in all 50 states, with online, paper and phone format options. The data contains information about the religious, political, spiritual and social background of those surveyed. The data can be accessed at the following link: https://www.pewresearch.org/dataset/2023-24-religious-landscape-study-rls-dataset/
 After trimming down our dataset to include only those with useful information and those without all NA values, we were left with 93 columns. Our driving question is twofold: 1) How well can we predict religiosity and spirituality based on factors including church attendance, family relationships, marriage, political opinions, religious affiliation and devotion, etc.?
 2) Which factors are most effective in predicting religiosity/spirituality of individuals? Does this vary by religious affiliation?
@@ -145,15 +145,15 @@ ggplot(data = data_subset3, aes(x=RELPER))+
 
 # Statistical Analysis
 
-To formally investigate the relationships suggested by the exploratory data analysis, we apply several statistical methods, including analysis of variance (ANOVA), correlation analysis, and multiple linear regression. These methods allow us to test for group differences, measure associations between variables, and identify key predictors of religiosity.
+To formally investigate the relationships suggested by the exploratory data analysis, we apply several statistical methods, including analysis of variance (ANOVA), correlation analysis, simple linear regression, and multiple linear regression. These methods allow us to test for group differences, measure associations between variables, and identify key predictors of religiosity.
 
 ## Section 1: Group Differences
 
 We begin by examining whether religiosity differs across religious traditions.
 
 Hypothesis Test:
-H0: No difference in religiosity between groups.
-Ha: There is a difference.
+H0: All religious groups have the same mean religiosity.
+Ha: At least one group's mean is different.
 
 ```{r}
 data_filtered <- subset(data, RELPER != 5)
@@ -163,90 +163,181 @@ summary(anova_model)
 
 data_filtered %>%
   group_by(CURREL) %>%
-  summarise(mean_religiosity = mean(RELPER, na.rm = TRUE),
-            n = n()) %>%
-   arrange(mean_religiosity)
+  summarise(
+    mean_religiosity = mean(RELPER, na.rm = TRUE),
+    sd_religiosity   = sd(RELPER, na.rm = TRUE),
+    n = n()
+  ) %>%
+  arrange(mean_religiosity)
 ```
 
-Interpret the what we get from anova model result....
+The ANOVA results indicate that we reject the null hypothesis, as the p-value is less than 0.05. This suggests that religiosity differs significantly across religious traditions.
+
+To further examine these differences, we computed the mean religiosity score for each group. Religiosity is measured on a scale from 1 (very religious) to 4 (not at all religious), excluding responses coded as 5 (don’t know/refused). Because lower values indicate higher religiosity, groups with lower mean scores are more religious on average. The results show that Protestants have lower mean religiosity scores than Catholics and the unaffiliated, indicating higher average religiosity, while the unaffiliated group reports the highest mean scores, indicating the lowest levels of religiosity.
+
+Protestants, Catholics, and the unaffiliated also have the largest sample sizes, making these estimates more reliable. The standard deviations, which range approximately from 0.5 to 1, suggest a moderate level of variation in religiosity within each group.
+
+```{r}
+summary_df <- data_filtered %>%
+  group_by(CURREL) %>%
+  summarise(
+    mean_religiosity = mean(RELPER, na.rm = TRUE),
+    sd_religiosity   = sd(RELPER, na.rm = TRUE),
+    n = n()
+  )
+
+ggplot(summary_df, aes(x = reorder(CURREL, mean_religiosity),
+                       y = mean_religiosity)) +
+  geom_col(fill = "steelblue") +
+  geom_errorbar(aes(ymin = mean_religiosity - sd_religiosity,
+                    ymax = mean_religiosity + sd_religiosity),
+                width = 0.2) +
+  coord_flip() +
+  labs(x = "Religion Groups",
+       y = "Mean Religiosity Score",
+       title = "Mean Religiosity(with Standard Deviation) by Religious Tradition") +
+  theme_minimal()
+```
 
 Check Assumptions for ANOVA:
 1. Independence
+
 2. Normality within groups
-3. Equal variance
+
+3. Common variance
 
 ```{r}
-plot(anova_model)
+# Figure: Distribution of religiosity scores by religious tradition
+
+ggplot(data_filtered, aes(x = CURREL, y = RELPER)) +
+  geom_boxplot(fill = "green") +
+  coord_flip() +
+  theme_minimal() +
+  labs(
+    x = "Religion Groups",
+    y = "Religiosity Score (1 = Very religious, 4 = Not at all religious)",
+    title = "Distribution of Religiosity Across Religious Traditions"
+  )
 ```
 
+Independence is assumed based on the sampling design of the dataset.
 
-... Interpret assumptions.
+A boxplot of religiosity scores was used to examine the distribution and variability of religiosity across religious traditions. The plot shows the median, interquartile range, and potential outliers for each group.
+
+The distributions appear reasonably symmetric within most groups, with no extreme deviations, suggesting that the assumption of approximate normality is reasonable. In addition, the spread of scores across groups is relatively similar, providing preliminary evidence that the assumption of equal variances is satisfied.
 
 ## Section 2: Spirituality vs Religiosity
 
 Next, we examine the relationship between spirituality and religiosity, as the exploratory analysis suggested that even unaffiliated individuals report relatively high levels of spirituality.
 
 ```{r}
-cor(data$RELPER, data$SPIRPER, use="complete.obs")
+data_no5 <- subset(data, RELPER != 5 & SPIRPER != 5)
+cor(data_no5$RELPER, data_no5$SPIRPER, use="complete.obs")
 
-model1 <- lm(RELPER ~ SPIRPER, data=data)
+model1 <- lm(RELPER ~ SPIRPER, data=data_no5)
 summary(model1)
 ```
+
+A correlation analysis was conducted between religiosity (RELPER) and spirituality (SPIRPER), excluding missing responses. The result is 0.562, indicating a moderate positive relationship between the two variables. This suggests that higher levels of spirituality are associated with higher religiosity scores. Given that higher religiosity scores correspond to lower levels of religiosity (1 = very religious, 4 = not at all religious), this indicates that higher spirituality is associated with lower reported religiosity.
+
+A simple linear regression further examined this relationship. The results show that spirituality is a statistically significant predictor of religiosity (p < 0.05). The coefficient indicates that a one-unit increase in spirituality is associated with an increase in religiosity score. The model explains approximately 31.57% (R_sqaured = 0.3157) of the variation in religiosity, suggesting a moderate relationship.
+
 Choose a plot to see the relationship:
 
 ```{r}
-ggplot(data = data) +
-  geom_jitter(aes(x = SPIRPER, y = RELPER), width = 0.2, height = 0.2, alpha = 0.3) +
-  geom_smooth(method = "lm", aes(x = SPIRPER, y = RELPER), color = 'green')
-
-ggplot(data, aes(x = factor(SPIRPER), y = RELPER)) +
-  geom_boxplot()
-
-data |> 
-  group_by(SPIRPER) |> 
-  summarize(mean_rel = mean(RELPER, na.rm=TRUE)) |> 
-  ggplot(aes(x = SPIRPER, y = mean_rel)) +
-  geom_point() +
-  geom_line()
+ggplot(data_no5, aes(x = SPIRPER, y = RELPER)) +
+  geom_jitter(width = 0.15, height = 0.15, alpha = 0.4) +
+  geom_smooth(method = "lm", se = TRUE, color = "blue") +
+  theme_minimal() +
+  labs(
+    x = "Spirituality (1 = low, 4 = high)",
+    y = "Religiosity (1 = very religious, 4 = not at all religious)",
+    title = "Relationship between Spirituality and Religiosity"
+  )
 ```
 
-Interpret....
+As spirituality increases, religiosity score increases, indicating lower religiosity. A jittered scatterplot with a fitted linear regression line was used to visualize the relationship between spirituality and religiosity. Jittering was applied to reduce overplotting due to the discrete nature of the 1–4 response scale.
 
 ## Section 3: Behavioral Predictors
 
 While spirituality captures internal beliefs, religiosity may also be influenced by observable behaviors such as attendance and prayer. We therefore examine whether these behavioral variables are significant predictors of religiosity.
 
+Data description:
+
+ATTNDPERRLS measures frequency of attendance at religious services (1 = more than once a week, 6 = never).
+
+PRAY measures frequency of prayer outside services (1 = several times a day, 7 = never).
+
+PRAC_B measures frequency of reading scripture (1 = at least once a week, 5 = never).
+
+PRAC_D measures frequency of sharing religious views with people of other faiths (1 = at least once a week, 5 = never).
+
+We test whether behavioral factors (attendance, prayer frequency, and religious practices) significantly predict religiosity.
+
+H0: That none of these behaviors are associated with religiosity
+Ha: That at least one behavioral variable significantly predicts religiosity.
+
 ```{r}
 no99 <- subset(data, RELPER != 5 & ATTNDPERRLS != 99 & PRAY != 99 & PRAC_B != 99 & PRAC_D != 99)
-
 model2 <- lm(RELPER ~ ATTNDPERRLS + PRAY + PRAC_B + PRAC_D, data=no99)
 summary(model2)
+```
 
+The results from the full model indicate that attendance (ATTNDPERRLS), prayer frequency (PRAY), and scripture reading (PRAC_B) are statistically significant predictors of religiosity (p < 0.05). Given the coding of religiosity (higher values indicate lower religiosity), these results suggest that more frequent religious practices are associated with higher levels of religiosity (i.e., more religious behavior). In contrast, PRAC_D is not statistically significant, suggesting that sharing religious views with others does not have a measurable relationship with religiosity in this model.
+
+The model explains approximately 58.56% (R_squared = 0.5856) of the variation in religiosity, indicating a relatively strong relationship between behavioral practices and religiosity.
+
+```{r}
 protestant_data <- subset(no99, CURREL == "Protestant")
 model_protestant <- lm(RELPER ~ ATTNDPERRLS + PRAY + PRAC_B + PRAC_D,
                        data = protestant_data)
 summary(model_protestant)
+```
 
+The results from the Protestant model indicate that attendance (ATTNDPERRLS), prayer frequency (PRAY), scripture reading (PRAC_B), and sharing religious views (PRAC_D) are statistically significant predictors of religiosity (p < 0.05). Given the coding of religiosity, where higher values indicate lower levels of religiosity, these results suggest that more frequent religious practices are associated with lower religiosity scores, indicating higher levels of religious engagement.
+
+The model explains approximately 27.34% (R_squared = 0.2734) of the variation in religiosity, suggesting a moderate relationship between behavioral practices and religiosity within the Protestant subsample.
+
+```{r}
 catholic_data <- subset(no99, CURREL == "Catholic")
 model_catholic <- lm(RELPER ~ ATTNDPERRLS + PRAY + PRAC_B + PRAC_D,
                        data = catholic_data)
 summary(model_catholic)
+```
 
+The results from the Catholic model indicate that attendance (ATTNDPERRLS), prayer frequency (PRAY), scripture reading (PRAC_B), and sharing religious views (PRAC_D) are statistically significant predictors of religiosity (p < 0.05). Given the coding of religiosity, where higher values indicate lower levels of religiosity, these results suggest that more frequent religious practices are associated with lower religiosity scores, indicating higher levels of religious engagement.
+
+The model explains approximately 47.64% (R_squared = 0.4764) of the variation in religiosity, suggesting a relatively strong relationship between behavioral practices and religiosity within the Catholic subsample.
+
+```{r}
 muslim_data <- subset(no99, CURREL == "Muslim")
 model_muslim <- lm(RELPER ~ ATTNDPERRLS + PRAY + PRAC_B + PRAC_D,
                        data = muslim_data)
 summary(model_muslim)
 ```
-Hypothesis Testing:
-H0:
-Ha:
 
-Interpret the result...
+The results from the Muslim model indicate that attendance (ATTNDPERRLS), prayer frequency (PRAY), and scripture reading (PRAC_B) are statistically significant predictors of religiosity (p < 0.05). Given the coding of religiosity, where higher values indicate lower levels of religiosity, these results suggest that more frequent religious practices are associated with lower religiosity scores, indicating higher levels of religious engagement. In contrast, PRAC_D is not statistically significant, suggesting that sharing religious views with others does not have a measurable relationship with religiosity in this model.
 
-Check for Assumptions of Regression:
-1. Linearity
-2. Nearly normal residuals
-3. Constant variability
+The model explains approximately 40.63% (R_squared = 0.4063) of the variation in religiosity, suggesting a moderate to relatively strong relationship between behavioral practices and religiosity within the Muslim subsample.
+
+```{r}
+unaffil_data <- subset(no99, CURREL == "Unaffiliated")
+model_unaffil <- lm(RELPER ~ ATTNDPERRLS + PRAY + PRAC_B + PRAC_D,
+                       data = unaffil_data)
+summary(model_unaffil)
+```
+
+The results from the Unaffiliated model indicate that some behavioral variables are statistically significant predictors of religiosity (p < 0.05). Given the coding of religiosity, where higher values indicate lower levels of religiosity, these results suggest that more frequent religious practices are associated with lower religiosity scores, indicating higher levels of religious engagement.
+
+The model explains approximately 38.84% (R_squared = 0.3884) of the variation in religiosity, suggesting a moderate relationship between behavioral practices and religiosity within the Unaffiliated subsample.
+
+#Conclusion
+
+Across both the full sample and some religious subsamples, behavioral factors—including attendance, prayer frequency, and scripture reading—consistently emerge as significant predictors of religiosity. These findings suggest that religiosity is strongly shaped by observable religious practices, rather than being solely an internal belief system.
+
+However, the strength of these relationships varies across religious traditions. The Catholic and Muslim subsamples show relatively stronger explanatory power, while the Protestant model shows a weaker relationship between behaviors and religiosity. The Unaffiliated group also demonstrates that behavioral practices remain relevant even in the absence of formal religious affiliation.
+
+Overall, the results indicate that religiosity is best understood as a behaviorally structured phenomenon, but the degree to which behavior predicts religiosity differs across religious traditions. This suggests that religious tradition plays a moderating role in shaping how behaviors translate into levels of religiosity.
 
 ## Section 4: Political Predictors of Religiosity
 
