@@ -17,7 +17,7 @@ library(dplyr)
 library(tidyverse)
 library(GGally)
 library(tinytex)
-# import data
+library(broom)
 data <- read_csv("Test.csv")
 ```
 
