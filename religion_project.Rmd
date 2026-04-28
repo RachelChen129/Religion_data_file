@@ -107,6 +107,11 @@ data <- data |> mutate(RELTRAD = factor(RELTRAD, levels=c(1000,10000,20000,30000
 
 ```
 
+
+```{r}
+cor(data$SPIRPER, data$RELPER)
+```
+
 From there, we were able to look at the relationship between some of the other variables and religion.
 
 First, before trying to plot the data, we noticed that there was a much larger number of those who identified as Catholic, Protestant or Unaffiliated than anything else, so we split the histogram facet_wrap into two to account for this (then split it again to account for the much larger prevalence of Mormon, Jewish and Other Faith than all the other religious identities combined) so that the spread of each religion across the different values would be clear. This splitting up of the religious categories will prove useful throughout the duration of the EDA section.
