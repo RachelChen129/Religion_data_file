@@ -306,7 +306,7 @@ The results from the full model indicate that attendance (ATTNDPERRLS), prayer f
 
 The model explains approximately 58.56% ($R^2$ = 0.5856) of the variation in religiosity, indicating a relatively strong relationship between behavioral practices and religiosity.
 
-```{r,include=FALSE}
+```{r, echo=FALSE}
 protestant_data <- subset(no99, CURREL == "Protestant")
 model_protestant <- lm(RELPER ~ ATTNDPERRLS + PRAY + PRAC_B + PRAC_D,
                        data = protestant_data)
