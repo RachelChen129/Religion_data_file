@@ -362,6 +362,28 @@ summary(protestant_polly2)
 unaffiliated_pol2 <- data_clean3 |> filter(CURREL == "Unaffiliated")
 unaffiliated_polly2 <- lm(RELPER ~ ABRTLGL + GAYMARR + QB2A + CHNG_C, data = unaffiliated_pol2)
 summary(unaffiliated_polly2)
+
+all_models <- bind_rows(
+  tidy(catholic_polly2, conf.int = TRUE) %>% mutate(Group = "Catholic"),
+  tidy(protestant_polly2, conf.int = TRUE) %>% mutate(Group = "Protestant"),
+  tidy(unaffiliated_polly2, conf.int = TRUE) %>% mutate(Group = "Unaffiliated")
+) %>%
+  filter(term != "(Intercept)")
+
+# Create the Multi-Model Comparison Chart
+ggplot(all_models, aes(x = estimate, y = term, color = Group)) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +
+  geom_point(position = position_dodge(width = 0.6), size = 3) +
+  geom_errorbarh(aes(xmin = conf.low, xmax = conf.high), 
+                 position = position_dodge(width = 0.6), height = 0.3) +
+  labs(title = "Social & Diversity Predictors of Religiosity",
+       subtitle = "Comparing Regression Coefficients (Slopes) across Religious Traditions",
+       x = "Estimate (Impact on Religiosity)",
+       y = "Predictor Variable",
+       color = "Religious Tradition") +
+  theme_minimal() +
+  scale_color_brewer(palette = "Set1")
+
 ```
 
 ## Section 5: Comprehensive Model
