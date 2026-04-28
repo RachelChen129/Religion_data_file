@@ -18,8 +18,7 @@ library(tidyverse)
 library(GGally)
 # import data
 data <- read_csv("Test.csv")
-install.packages('tinytex')
-tinytex::install_tinytex()
+
 ```
 
 # Abstract
@@ -353,7 +352,7 @@ The model explains approximately 38.84% ($R^2$ = 0.3884) of the variation in rel
 
 ## Section 4: Political Predictors of Religiosity
 
-```{r,include=FALSE}
+```{r}
 data_clean <- subset(data, RELPER != 99 & ABRTLGL != 99 & GAYMARR != 99 & QB2A != 99 & CHNG_C)
 
 model3 <- lm(RELPER ~ ABRTLGL + GAYMARR + QB2A + CHNG_C, data = data_clean)
@@ -369,7 +368,7 @@ Furthermore, support for gay marriage predicts religiosity well, as does support
 
 Alternatively, support for abortion, homosexuality, and gay marriage predicts spirituality but support for transgender individuals does not predict spirituality.
 
-```{r,include=FALSE}
+```{r}
 data_clean2 <- subset(data, RELPER != 99 & ABRTLGL != 99 & GAYMARR != 99 & QB2A != 99 & CHNG_C != 99)
 
 
@@ -392,7 +391,7 @@ summary(unaffiliated_polly)
 
 While support for abortion, same sex marriage, and homosexuality is a statistically significant predictor of religiosity in Catholics and people who are unaffiliated, support for these causes is not statistically significant in predicting religiosity in Protestants. Interestingly, greater acceptance of transgender individuals cannot be used to predict religiosity in people who are unaffiliated. 
 
-```{r,include=FALSE}
+```{r}
 data_clean3 <- subset(data, RELPER != 99 & CHNG_A != 99 & CHNG_B != 99 & DIVRELPOP != 99 & DIVRACPOP != 99 & QB2C != 99)
 
 catholic_pol2 <- data_clean3 |> filter(CURREL == "Catholic")
@@ -414,7 +413,7 @@ summary(unaffiliated_polly2)
 
 Finally, we construct a comprehensive model using 27 variables that incorporates behavioral measures, belief variables, and religious affiliation to determine which factors are most important in predicting religiosity.
 
-```{r, include=FALSE}
+```{r}
 
 vars <- c("RELPER", "ATTNDPERRLS", "GOD", "HVN", "HLL", 
           "PRAY", "PRAC_D", "PRAC_B", "ABRTLGL", "CHATTEND", 
@@ -431,7 +430,7 @@ summary(final_model_rel)
 
 With an $R^2$ of 0.71, we have pretty good confidence that this model can predict religiosity in individuals. An $R^2$ of 0.71 tells us that 71% of variance can be explained by the model and the variables that we presented it with. The results for spirituality were quite a bit lower, however, with an $R^2$ of just 43%.
 
-```{r, include=FALSE}
+```{r}
 
 final_model_spir <- lm(SPIRPER ~ RELTRAD+CURREL+ATTNDPERRLS+GOD+HVN+HLL+PRAY+PRAC_D+PRAC_B+ABRTLGL+FRMREL+CHATTEND+MARITAL+SCPRY2+BIRTHDECADE+HISP+RACECMB+EDUCREC+E2+EMPLSIT+USGEN+REG+PARTY+IDEO+INC_SDT1+GENDER, data=data_new)
 
