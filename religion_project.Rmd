@@ -3,8 +3,8 @@ title: "Predictors of Religiosity and Spirituality"
 author: "Rachel Chen, Topher Hanagan, Jakob Hildebrandt"
 date: "2026-04-20"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -22,77 +22,18 @@ data <- read_csv("Test.csv")
 ```
 
 # Abstract
-The level of one's religiosity and spirituality are often associated with one's other beliefs and habits regarding issues considered related in nature to faith, including political beliefs, family relationships, church attendance and prayer habits, among others. After some preliminary exploratory data analysis to get a feel for the spread of our data, we analyzed the group differences between faith traditions, the relationship between spirituality and religiosity, behavioral and political belief predictors of religiosity and spirituality, finally culminating in the complete models that predict the spirituality and religiosity of individuals based on most available factors. The complete models were able to predict much more accurately the religiosity of an individual, with an $R^2$ of .71 for the religiosity model and an $R^2$ of .43 for the spirituality model.
+
+The level of one's religiosity and spirituality are often associated with one's other beliefs and habits regarding issues considered related in nature to faith, including political beliefs, family relationships, church attendance and prayer habits, among others. After some preliminary exploratory data analysis to get a feel for the spread of our data, we analyzed the group differences between faith traditions, the relationship between spirituality and religiosity, behavioral and political belief predictors of religiosity and spirituality, finally culminating in the complete models that predict the spirituality and religiosity of individuals based on most available factors. The complete models were able account for more of the variance of the religiosity of an individual, with an $R^2$ of .71, than for the spirituality of an individual, which had an $R^2$ of .41.
 
 # Introduction
 
-The dataset that we're working with comes from the PEW Research Center. The survey was intended to get responses from as many Americans as possible, offering surveys in English and Spanish in all 50 states, with online, paper and phone format options. The data contains information about the religious, political, spiritual and social background of those surveyed. The data can be accessed at the following link: https://www.pewresearch.org/dataset/2023-24-religious-landscape-study-rls-dataset/
-After trimming down our dataset to include only those with useful information and those without all NA values, we were left with 93 columns. Our driving question is twofold: 1) How well can we predict religiosity and spirituality based on factors including church attendance, family relationships, marriage, political opinions, religious affiliation and devotion, etc.?
-2) Which factors are most effective in predicting religiosity/spirituality of individuals? Does this vary by religious affiliation?
+The dataset that we're working with comes from the PEW Research Center. The data comes from a survey of the American public about religious affiliation, conducted with the intention of tracking changes in U.S. religious affiliation. The survey was intended to get responses from as many Americans as possible, offering surveys in English and Spanish in all 50 states, with online, paper and phone format options. The data contains information about the religious, political, spiritual and social background of those surveyed. After trimming down our dataset to include only those with useful information and those without all NA values, we were left with 93 columns. Our driving question is twofold: 1) How well can we predict religiosity and spirituality based on factors including church attendance, family relationships, marriage, political opinions, religious affiliation and devotion, etc.? 2) Which factors are most effective in predicting religiosity/spirituality of individuals? Does this vary by religious affiliation?
+
+In our dataset, many variables were unusable due to lack of data or relevance to our research question. We narrowed our dataset down to 93 variables, of which the 28 most important were related to religious affiliation, current religion, level of religiosity and spirituality on a scale of 1-5, frequency of church service attendance, belief in God, Heaven and Hell, frequency of prayer, reading of scripture and attendance of religious services growing up, sharing beliefs with others, support of legalization of abortion, the religion of the respondents' family, marital status, support of prayer in public schools, birth decade, race and hispanic status, educational attainment, current school enrollment and employment status, immigration and voting status, political party affiliation and views, income bracket and gender. Many other variables exist and are used in this paper, but these are a sampling of many that are related to the question of religiosity and spirituality.
 
 # Exploratory Data Analysis
 
-In our dataset, many variables were unusable due to lack of data or relevance to our research question. We narrowed our dataset down to 93 variables, of which the 28 most important are:
-
-RELTRAD (religious affiliation)
-
-CURREL (same as before but collapses evangelical, mainline and black prot into one group)
-
-RELPER (how religious the respondent is, 1-4)
-
-SPIRPER (how spiritual the respondent is, 1-4)
-
-ATTNDPERRLS (how often they attend in person)
-
-GOD (belief in God)
-
-HVN (is there a heaven)
-
-HLL (is there a hell)
-
-PRAY (frequency of prayer in personal life)
-
-PRAC_B (how often do you read scripture outside of worship service)
-
-PRAC_D (how often do you share your beliefs with others)
-
-ABRTLGL (support for legalization of abortion in all or most cases)
-
-FRMREL (religion of family)
-
-CHATTEND (how often you attended religious services growing up)
-
-MARITAL (marital status)
-
-SCPRY2 (prayers in public schools)
-
-BIRTHDECADE (birth decade)
-
-HISP (hispanic or not)
-
-RACECMB (race)
-
-EDUCREC (highest educational attainment)
-
-E2 (currently enrolled in school)
-
-EMPLSIT (current work situation)
-
-USGEN (immigrant or child or immigrants)
-
-REG (registered to vote or not)
-
-PARTY (political party affiliation)
-
-IDEO (political views)
-
-INC_SDT1 (income bracket)
-
-GENDER (male or female or other)
-
-Many other variables exist and are used in this paper, but these are a sampling of many that are related to the question of religiosity and spirituality.
-
-First, we turned CURREL into a factor so that we can create "bins" of how many people fall into each religious tradition.
+First, we turned the current religion variable into a factor so that we can create "bins" of how many people fall into each religious tradition.
 
 ```{r include=FALSE}
 data <- data |> mutate(CURREL = factor(CURREL,
@@ -111,6 +52,7 @@ data <- data |> mutate(RELTRAD = factor(RELTRAD,
 ))
 ```
 
+Taking a quick
 
 ```{r}
 cor(data$SPIRPER, data$RELPER)
@@ -269,7 +211,7 @@ The distributions appear reasonably symmetric within most groups, with no extrem
 
 ## Section 2: Spirituality vs Religiosity
 
-Next, we examine the relationship between spirituality and religiosity, as the exploratory data analysis suggested that even unaffiliated individuals report relatively high levels of spirituality.
+Next, we examine the relationship between the spirituality and religiosity variables, as the exploratory data analysis suggested that even unaffiliated individuals report relatively high levels of spirituality.
 
 ```{r, echo=FALSE}
 data_no5 <- subset(data, RELPER != 5 & SPIRPER != 5)
@@ -279,7 +221,7 @@ model1 <- lm(RELPER ~ SPIRPER, data = data_no5)
 summary(model1)
 ```
 
-A correlation analysis was conducted between religiosity (RELPER) and spirituality (SPIRPER), excluding missing responses. The result is 0.562, indicating a moderate positive relationship between the two variables. This suggests that higher levels of spirituality are associated with higher religiosity scores. Given that higher religiosity scores correspond to lower levels of religiosity (1 = very religious, 4 = not at all religious), this indicates that higher spirituality is associated with lower reported religiosity.
+A correlation analysis was conducted between religiosity and spirituality, excluding missing responses. The result is 0.562, indicating a moderate positive relationship between the two variables. This suggests that higher levels of spirituality are associated with higher religiosity scores. Given that higher religiosity scores correspond to lower levels of religiosity (1 = very religious, 4 = not at all religious), this indicates that higher spirituality is associated with lower reported religiosity.
 
 A simple linear regression further examined this relationship. The results show that spirituality is a statistically significant predictor of religiosity (p < 0.05). The coefficient indicates that a one-unit increase in spirituality is associated with an increase in religiosity score. The model explains approximately 31.57% ($R^2$ = 0.3157) of the variation in religiosity, suggesting a moderate relationship.
 
@@ -301,17 +243,7 @@ As spirituality increases, religiosity score increased, indicating lower religio
 
 While spirituality captures internal beliefs, religiosity may also be influenced by observable behaviors such as attendance and prayer. We therefore examine whether these behavioral variables are significant predictors of religiosity.
 
-Data description:
-
-ATTNDPERRLS measures frequency of attendance at religious services (1 = more than once a week, 6 = never).
-
-PRAY measures frequency of prayer outside services (1 = several times a day, 7 = never).
-
-PRAC_B measures frequency of reading scripture (1 = at least once a week, 5 = never).
-
-PRAC_D measures frequency of sharing religious views with people of other faiths (1 = at least once a week, 5 = never).
-
-We test whether behavioral factors (attendance, prayer frequency, and religious practices) significantly predict religiosity.
+We focused on four variables here, including frequency of religious service attendance, prayer, scripture reading, and sharing of religious views. We test whether these behavioral factors significantly predict religiosity.
 
 Hypothesis Test:
 
@@ -325,7 +257,7 @@ model2 <- lm(RELPER ~ ATTNDPERRLS + PRAY + PRAC_B + PRAC_D, data = no99)
 summary(model2)
 ```
 
-The results from the full model indicate that attendance (ATTNDPERRLS), prayer frequency (PRAY), and scripture reading (PRAC_B) are statistically significant predictors of religiosity (p < 0.05). Given the coding of religiosity (higher values indicate lower religiosity), these results suggest that more frequent religious practices are associated with higher levels of religiosity (i.e., more religious behavior). In contrast, PRAC_D is not statistically significant, suggesting that sharing religious views with others does not have a measurable relationship with religiosity in this model.
+The results from the full model indicate that attendance, prayer frequency, and scripture reading are statistically significant predictors of religiosity (p < 0.05). Given the coding of religiosity (higher values indicate lower religiosity), these results suggest that more frequent religious practices are associated with higher levels of religiosity (i.e., more religious behavior). In contrast, PRAC_D is not statistically significant, suggesting that sharing religious views with others does not have a measurable relationship with religiosity in this model.
 
 The model explains approximately 58.56% ($R^2$ = 0.5856) of the variation in religiosity, indicating a relatively strong relationship between behavioral practices and religiosity.
 
@@ -452,7 +384,7 @@ final_model_rel <- lm(RELPER ~ RELTRAD + CURREL + ATTNDPERRLS + GOD + HVN + HLL 
 summary(final_model_rel)
 ```
 
-With an $R^2$ of 0.71, we have pretty good confidence that this model can predict religiosity in individuals. An $R^2$ of 0.71 tells us that 71% of variance can be explained by the model and the variables that we presented it with. The results for spirituality were quite a bit lower, however, with an $R^2$ of just 43%.
+With an $R^2$ of 0.71, we have pretty good confidence that this model can predict religiosity in individuals. An $R^2$ of 0.71 tells us that 71% of variance can be explained by the model and the variables that we presented it with. The results for spirituality were quite a bit lower, however, with an $R^2$ of just .41.
 
 ```{r, echo=FALSE}
 final_model_spir <- lm(SPIRPER ~ RELTRAD + CURREL + ATTNDPERRLS + GOD + HVN + HLL + PRAY + PRAC_D + PRAC_B + ABRTLGL + FRMREL + CHATTEND + MARITAL + SCPRY2 + BIRTHDECADE + HISP + RACECMB + EDUCREC + E2 + EMPLSIT + USGEN + REG + PARTY + IDEO + INC_SDT1 + GENDER, data = data_new)
@@ -488,3 +420,7 @@ Overall, the results indicate that religiosity is best understood as a behaviora
 Similarly, depending on the religious tradition, certain political beliefs seemed to show a moderate correlation with religiosity and spirituality.
 
 For the full models, religiosity was much easier to predict based on the behavioral, political and religious beliefs and factors than spirituality. One reason that this may be the case is potentially due to religious affiliation (with higher religiosity being already more rare) being associated with a specific set of beliefs that one subscribes to. On the other hand, one can claim to be spiritual to a certain extent, but this term is more vague in what it describes. Many classify themselves as "spiritual but not religious," a category that denotes vague spiritual feelings without adherence to a specific religion. It is important to note that the analogous "religious but not spiritual" designation is almost far less common than its counterpart and mostly nonsensical.
+
+
+Source:
+https://www.pewresearch.org/dataset/2023-24-religious-landscape-study-rls-dataset/
