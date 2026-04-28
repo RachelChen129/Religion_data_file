@@ -18,6 +18,8 @@ library(tidyverse)
 library(GGally)
 # import data
 data <- read_csv("Test.csv")
+install.packages('tinytex')
+tinytex::install_tinytex()
 ```
 
 # Abstract
