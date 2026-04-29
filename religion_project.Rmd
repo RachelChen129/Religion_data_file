@@ -3,8 +3,8 @@ title: "Predictors of Religiosity and Spirituality"
 author: "Rachel Chen, Topher Hanagan, Jakob Hildebrandt"
 date: "2026-04-20"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -136,7 +136,7 @@ data_filtered <- subset(data, RELPER != 5)
 anova_model <- aov(RELPER ~ CURREL, data = data_filtered)
 summary(anova_model)
 
-data_filtered %>%
+eda_summary_table <- data_filtered %>%
   group_by(CURREL) %>%
   summarise(
     mean_religiosity = mean(RELPER, na.rm = TRUE),
@@ -144,6 +144,12 @@ data_filtered %>%
     n = n()
   ) %>%
   arrange(mean_religiosity)
+
+knitr::kable(
+  eda_summary_table,
+  caption = "Summary Statistics by Religious Group",
+  col.names = c("Current Religion", "Mean Religiosity", "SD", "Sample Size")
+)
 ```
 
 The ANOVA results indicate that we reject the null hypothesis, as the p-value is less than 0.05. This suggests that religiosity differs significantly across religious traditions.
@@ -182,32 +188,53 @@ ggplot(summary_df, aes(
   theme_minimal()
 ```
 
+```{r}
+tukey_result <- TukeyHSD(anova_model)
+tukey_result
+```
+
+Tukey post-hoc tests reveal that most religious groups differ significantly in mean religiosity. In particular, the unaffiliated group exhibits substantially lower religiosity compared to all religious traditions, while Protestant respondents fall near the middle of the distribution. Jewish, Buddhist, and Other Faith groups also show significantly higher differences relative to Protestants. However, some comparisons, such as between Muslim and Protestant respondents, are not statistically significant, suggesting similar levels of religiosity between these groups.
+
 Check Assumptions for ANOVA:
+
 1. Independence
 
 2. Normality within groups
 
 3. Common variance
 
-```{r, echo=FALSE, fig.width=10, fig.height=5}
-# Figure: Distribution of religiosity scores by religious tradition
+```{r, warning = FALSE, echo=FALSE, fig.width=10, fig.height=5}
+m <- augment(anova_model)
 
-ggplot(data_filtered, aes(x = CURREL, y = RELPER)) +
-  geom_boxplot(fill = "tan") +
-  coord_flip() +
-  theme_minimal() +
+ggplot(m, aes(x = 1:nrow(m), y = .resid)) +
+  geom_point() +
+  geom_hline(yintercept = 0, linetype = "dashed") +
   labs(
-    x = "Religion Groups",
-    y = "Religiosity Score (1 = Very religious, 4 = Not at all religious)",
-    title = "Distribution of Religiosity Across Religious Traditions"
-  )
+    title = "Residuals vs Observation Order (Independence Check)",
+    x = "Observation Order",
+    y = "Residuals"
+  ) +
+  theme_minimal()
+
+ggplot(data_filtered, aes(sample = RELPER)) +
+  stat_qq() +
+  stat_qq_line() +
+  facet_wrap(~ CURREL) +
+  labs(title = "Normality Check Within Groups (Q-Q Plots)") +
+  theme_minimal()
+
+ggplot(m, aes(x = .fitted, y = .resid)) +
+  geom_point() +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  labs(
+    title = "Constant Variance Check",
+    x = "Fitted Values",
+    y = "Residuals"
+  ) +
+  theme_minimal()
 ```
 
-Independence is assumed based on the sampling design of the dataset.
-
-A boxplot of religiosity scores was used to examine the distribution and variability of religiosity across religious traditions. The plot shows the median, interquartile range, and potential outliers for each group.
-
-The distributions appear reasonably symmetric within most groups, with no extreme deviations, suggesting that the assumption of approximate normality is reasonable. In addition, the spread of scores across groups is relatively similar, providing preliminary evidence that the assumption of equal variances is satisfied.
+To assess the assumptions of ANOVA, several diagnostic plots were examined. The residuals versus observation order plot shows no clear pattern, suggesting that the independence assumption is reasonably satisfied. The Q-Q plots across religious groups indicate that residuals are approximately normally distributed within each group, with only minor deviations in the tails, which is expected given the large sample sizes. Finally, the residuals versus fitted values plot shows a relatively constant spread of residuals, suggesting that the assumption of equal variances across groups is reasonably met. Overall, the diagnostic checks indicate that the assumptions required for ANOVA are adequately satisfied for this analysis.
 
 ## Section 2: Spirituality vs Religiosity
 
@@ -238,6 +265,38 @@ ggplot(data_no5, aes(x = SPIRPER, y = RELPER)) +
 ```
 
 As spirituality increases, religiosity score increased, indicating lower religiosity. A jittered scatterplot with a fitted linear regression line was used to visualize the relationship between spirituality and religiosity. Jittering was applied to help with data visualization due to the discrete nature of the 1–4 response scale.
+
+We want to check the assumptions for linear model:
+
+```{r, warning=FALSE}
+m1 <- augment(model1)
+
+ggplot(data = m1, aes(x = .resid)) +
+  geom_histogram(aes(y = ..density..), bins = 10) +
+  stat_function(
+    fun = dnorm,
+    args = list(
+      mean = mean(m1$.resid),
+      sd = sd(m1$.resid)
+    ),
+    color = "blue",
+    linewidth = 1.5
+  ) +
+  labs(
+    title = "Histogram of Residuals",
+    x = "Residuals",
+    y = "Density"
+  ) +
+  theme_minimal()
+
+ggplot(model1, aes(sample = .resid)) +
+  stat_qq() +
+  stat_qq_line() +
+  labs(title = "Q-Q Plot of Residuals") +
+  theme_minimal()
+```
+
+To assess the normality assumption of the linear model, both a histogram of residuals and a Q-Q plot were examined. The histogram shows that the residuals are approximately bell-shaped and centered around zero, with only minor deviations from normality. The Q-Q plot further indicates that most points lie close to the reference line, with slight deviations in the tails. Given the large sample size, these deviations are not concerning, and the normality assumption is considered reasonably satisfied.
 
 ## Section 3: Behavioral Predictors
 
@@ -308,6 +367,41 @@ summary(model_unaffil)
 The results from the Unaffiliated model indicate that some behavioral variables are statistically significant predictors of religiosity (p < 0.05). Given the coding of religiosity, where higher values indicate lower levels of religiosity, these results suggest that more frequent religious practices are associated with lower religiosity scores, indicating higher levels of religious engagement.
 
 The model explains approximately 38.84% ($R^2$ = 0.3884) of the variation in religiosity, suggesting a moderate relationship between behavioral practices and religiosity within the Unaffiliated subsample.
+
+```{r, warning=FALSE}
+models <- list(
+  Overall = model2,
+  Protestant = model_protestant,
+  Catholic = model_catholic,
+  Muslim = model_muslim,
+  Unaffiliated = model_unaffil
+)
+
+coef_df <- bind_rows(lapply(names(models), function(name) {
+  tidy(models[[name]], conf.int = TRUE) |> 
+    filter(term != "(Intercept)") |> 
+    mutate(Group = name)
+})) |>
+  mutate(term = recode(term,
+    ATTNDPERRLS = "Attendance",
+    PRAY = "Prayer",
+    PRAC_B = "Scripture Reading",
+    PRAC_D = "Sharing Beliefs"
+  ))
+
+ggplot(coef_df, aes(x = estimate, y = term, color = Group)) +
+  geom_point(position = position_dodge(width = 0.5)) +
+  geom_errorbarh(aes(xmin = conf.low, xmax = conf.high),
+                 position = position_dodge(width = 0.5), height = 0.2) +
+  labs(
+    title = "Behavioral Predictors of Religiosity",
+    x = "Effect on Religiosity",
+    y = "Behavioral Variables"
+  ) +
+  theme_minimal()
+```
+
+The coefficient plot compares the effects of behavioral predictors on religiosity across different religious groups. Each point represents the estimated effect size, with horizontal bars indicating 95% confidence intervals. Across all models, religious service attendance and prayer frequency consistently show strong positive associations with religiosity, indicating that more frequent participation in these behaviors is linked to higher levels of religiosity. Scripture reading also demonstrates a positive but smaller effect across groups. In contrast, sharing religious beliefs exhibits weaker and less consistent effects, with some confidence intervals crossing zero, suggesting limited predictive power. Overall, the results indicate that while core devotional practices are strong and stable predictors of religiosity across groups, the influence of interpersonal religious expression varies considerably.
 
 ## Section 4: Political Predictors of Religiosity
 
