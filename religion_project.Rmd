@@ -529,26 +529,66 @@ Check for Assumptions of Regression:
 3. Constant variability
 
 
-```{r assumptions}
-library(modelr)
 
-residuals_plot_rel <- data_new %>%
-  add_residuals(final_model_rel, "lresid")
 
-ggplot(residuals_plot_rel, aes(RELPER, lresid)) +
-  geom_hex(bins = 50)
+```{r, warning=FALSE}
+m2 <- augment(final_model_spir)
 
-residuals_plot_spir <- data_new %>%
-  add_residuals(final_model_spir, "lresid")
+ggplot(data = m2, aes(x = .resid)) +
+  geom_histogram(aes(y = ..density..), bins = 10) +
+  stat_function(
+    fun = dnorm,
+    args = list(
+      mean = mean(m2$.resid),
+      sd = sd(m2$.resid)
+    ),
+    color = "blue",
+    linewidth = 1.5
+  ) +
+  labs(
+    title = "Histogram of Residuals",
+    x = "Residuals",
+    y = "Density"
+  ) +
+  theme_minimal()
 
-ggplot(residuals_plot_spir, aes(SPIRPER, lresid)) +
-  geom_hex(bins = 50)
+ggplot(final_model_spir, aes(sample = .resid)) +
+  stat_qq() +
+  stat_qq_line() +
+  labs(title = "Q-Q Plot of Residuals") +
+  theme_minimal()
 ```
 
+```{r, warning=FALSE}
+m3 <- augment(final_model_rel)
 
+ggplot(data = m3, aes(x = .resid)) +
+  geom_histogram(aes(y = ..density..), bins = 10) +
+  stat_function(
+    fun = dnorm,
+    args = list(
+      mean = mean(m3$.resid),
+      sd = sd(m3$.resid)
+    ),
+    color = "blue",
+    linewidth = 1.5
+  ) +
+  labs(
+    title = "Histogram of Residuals",
+    x = "Residuals",
+    y = "Density"
+  ) +
+  theme_minimal()
+
+ggplot(final_model_rel, aes(sample = .resid)) +
+  stat_qq() +
+  stat_qq_line() +
+  labs(title = "Q-Q Plot of Residuals") +
+  theme_minimal()
+```
 
 ```{r, echo=FALSE}
-final_model_rel2 <- lm(RELPER ~ ATTNDPERRLS + GOD + HVN + HLL + PRAY + PRAC_D + PRAC_B + Abortion_Legality  + SCPRY2 + EDUCREC + EMPLSIT + IDEO + INC_SDT1, data = data_new)
+final_model_rel2 <- lm(RELPER ~ ATTNDPERRLS + GOD + HVN + HLL + PRAY + PRAC_D + PRAC_B + ABRTLGL  + SCPRY2 + EDUCREC + EMPLSIT + IDEO + INC_SDT1, data = data_new)
 
 summary(final_model_rel2)
 ```
