@@ -438,35 +438,7 @@ summary(model3)
 m1_resids <- augment(model3) %>% 
   mutate(Model = "Religiosity Model")
 
-m2_resids <- augment(data_spir) %>% 
-  mutate(Model = "Spirituality Model")
 
-all_resids <- bind_rows(m1_resids, m2_resids)
-
-ggplot(all_resids, aes(x = .resid)) +
-  geom_histogram(aes(y = after_stat(density)), 
-                 bins = 30, fill = "gray90", color = "white") +
-  
-  
-  stat_function(
-    fun = dnorm,
-    args = list(
-      mean = mean(all_resids$.resid, na.rm = TRUE),
-      sd = sd(all_resids$.resid, na.rm = TRUE)
-    ),
-    color = "blue",
-    linewidth = 1.5
-  ) +
-  
-  facet_wrap(~ Model, scales = "free") +
-  
-  labs(
-    title = "Residual Normality Check",
-    subtitle = "Comparing Error Distributions for Religiosity vs. Spirituality Models",
-    x = "Residual (Prediction Error)",
-    y = "Density"
-  ) +
-  theme_minimal()
 ```
 It would appear that removal of the 99s which represent those who did not answer made a substantial difference on the fit of the model. 
 Furthermore, support for gay marriage predicts religiosity well, as does support for transgender individuals. However, acceptance of homosexuality is an incredibly poor predictor of religiosity in the body public. 
