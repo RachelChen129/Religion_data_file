@@ -23,7 +23,7 @@ data <- read_csv("Test.csv")
 
 # Abstract
 
-The level of one's religiosity and spirituality are often associated with one's other beliefs and habits regarding issues considered related in nature to faith, including political beliefs, family relationships, church attendance and prayer habits, among others. After some preliminary exploratory data analysis to get a feel for the spread of our data, we analyzed the group differences between faith traditions, the relationship between spirituality and religiosity, behavioral and political belief predictors of religiosity and spirituality, finally culminating in the complete models that predict the spirituality and religiosity of individuals based on most available factors. The complete models were able account for more of the variance of the religiosity of an individual, with an $R^2$ of .71, than for the spirituality of an individual, which had an $R^2$ of .41.
+The level of one's religiosity and spirituality are often associated with one's other beliefs and habits regarding issues considered related in nature to faith, including political beliefs, family relationships, church attendance and prayer habits, among others. After some preliminary exploratory data analysis to get a feel for the spread of our data, we analyzed the group differences between faith traditions, the relationship between spirituality and religiosity, behavioral and political belief predictors of religiosity and spirituality, finally culminating in the complete models that predict the spirituality and religiosity of individuals based on most available factors. The complete models were able account for more of the variance of the religiosity of an individual, with an $R^2$ of .66, than for the spirituality of an individual, which had an $R^2$ of .43.
 
 # Introduction
 
@@ -505,37 +505,35 @@ ggplot(all_models, aes(x = estimate, y = term, color = Group)) +
 
 ## Section 5: Comprehensive Model
 
-Finally, we construct a comprehensive model using 27 variables that incorporates behavioral measures, belief variables, and religious affiliation to determine which factors are most important in predicting religiosity.
+Finally, using 26 variables we construct a comprehensive model that incorporates behavioral measures, belief variables, and religious affiliation to determine which factors are most important in predicting religiosity.
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, include=FALSE}
 
+vars <- c("RELPER", "ATTNDPERRLS", "GOD", "HVN", "HLL", 
+          "PRAY", "PRAC_D", "PRAC_B", "ABRTLGL", "CHATTEND", 
+          "MARITAL", "SCPRY2", "BIRTHDECADE", "HISP", "RACECMB", "EDUCREC", 
+          "E2", "EMPLSIT", "USGEN", "REG", "PARTY", "IDEO", "INC_SDT1", "GENDER")
 
-data_new <- data %>%
+data_new <- data |>
   mutate(across(all_of(vars), ~ na_if(., 99)))
 
 
-final_model_rel <- lm(RELPER ~ RELTRAD + CURREL + ATTNDPERRLS + GOD + HVN + HLL + PRAY + PRAC_D + PRAC_B + ABRTLGL  + FRMREL + CHATTEND + MARITAL + SCPRY2 + BIRTHDECADE + HISP + RACECMB + EDUCREC + E2 + EMPLSIT + USGEN + REG + PARTY + IDEO + INC_SDT1 + GENDER, data = data_new)
+final_model_rel <- lm(RELPER ~ RELTRAD + ATTNDPERRLS + GOD + HVN + HLL + PRAY + PRAC_D + PRAC_B + ABRTLGL  + FRMREL + CHATTEND + MARITAL + SCPRY2 + BIRTHDECADE + HISP + RACECMB + EDUCREC + E2 + EMPLSIT + USGEN + REG + PARTY + IDEO + INC_SDT1 + GENDER, data = data_new)
 
 summary(final_model_rel)
 ```
 
-With an $R^2$ of 0.71, we have pretty good confidence that this model can predict religiosity in individuals. An $R^2$ of 0.71 tells us that 71% of variance can be explained by the model and the variables that we presented it with. The results for spirituality were quite a bit lower, however, with an $R^2$ of just .41.
+With an $R^2$ of 0.6645, we have pretty good confidence that this model can predict religiosity in individuals. An $R^2$ of 0.66 tells us that 66% of variance can be explained by the model and the variables that we presented it with. The $R^2$ for spirituality was quite a bit lower, however, with an $R^2$ of just .4346.
 
-```{r, echo=FALSE}
-final_model_spir <- lm(SPIRPER ~ RELTRAD + CURREL + ATTNDPERRLS + GOD + HVN + HLL + PRAY + PRAC_D + PRAC_B + ABRTLGL  + FRMREL + CHATTEND + MARITAL + SCPRY2 + BIRTHDECADE + HISP + RACECMB + EDUCREC + E2 + EMPLSIT + USGEN + REG + PARTY + IDEO + INC_SDT1 + GENDER, data = data_new)
+```{r, echo=FALSE, include=FALSE}
+final_model_spir <- lm(SPIRPER ~ RELTRAD +  ATTNDPERRLS + GOD + HVN + HLL + PRAY + PRAC_D + PRAC_B + ABRTLGL  + FRMREL + CHATTEND + MARITAL + SCPRY2 + BIRTHDECADE + HISP + RACECMB + EDUCREC + E2 + EMPLSIT + USGEN + REG + PARTY + IDEO + INC_SDT1 + GENDER, data = data_new)
 
 summary(final_model_spir)
 ```
 
-Check for Assumptions of Regression:
-1. Linearity
-2. Nearly normal residuals
-3. Constant variability
+Checking the assumptions for regression, we see that the residuals for the spirituality model are normally distributed:
 
-
-
-
-```{r, warning=FALSE}
+```{r, warning=FALSE, echo=FALSE, fig.width=10, fig.height=5}
 m2 <- augment(final_model_spir)
 
 ggplot(data = m2, aes(x = .resid)) +
@@ -563,7 +561,9 @@ ggplot(final_model_spir, aes(sample = .resid)) +
   theme_minimal()
 ```
 
-```{r, warning=FALSE}
+The same is true of the religiosity model:
+
+```{r, warning=FALSE, echo=FALSE, fig.width=10, fig.height=5}
 m3 <- augment(final_model_rel)
 
 ggplot(data = m3, aes(x = .resid)) +
@@ -591,14 +591,20 @@ ggplot(final_model_rel, aes(sample = .resid)) +
   theme_minimal()
 ```
 
-```{r, echo=FALSE}
-final_model_rel2 <- lm(RELPER ~ ATTNDPERRLS + GOD + HVN + HLL + PRAY + PRAC_D + PRAC_B + ABRTLGL  + SCPRY2 + EDUCREC + EMPLSIT + IDEO + INC_SDT1, data = data_new)
+```{r, echo=FALSE, include=FALSE}
+final_model_rel2 <- lm(RELPER ~ RELTRAD + ATTNDPERRLS + GOD + HVN + HLL + PRAY + PRAC_D + PRAC_B + ABRTLGL + CHATTEND + SCPRY2 + EDUCREC + EMPLSIT + PARTY + IDEO + INC_SDT1 + GENDER, data = data_new)
 
 summary(final_model_rel2)
 ```
 
+```{r, echo=FALSE, include=FALSE}
+final_model_spir2 <- lm(SPIRPER ~ RELTRAD + ATTNDPERRLS + GOD + HVN + PRAY + PRAC_D + PRAC_B + FRMREL + CHATTEND + SCPRY2 + BIRTHDECADE + HISP + EDUCREC + EMPLSIT + USGEN + REG + PARTY + IDEO + INC_SDT1 + GENDER, data = data_new)
 
-Looking at the p-values for the religiosity model, there were quite a few variables that were not impactful in predicting religiosity. These included FRMREL, RELTRAD, CURREL, CHATTEND, MARITAL, BIRTHDECADE, HISP, RACECMB, E2, USGEN, REG, PARTY, and GENDER. When these variables were removed, the $R^2$ value decreased to .64.
+summary(final_model_spir2)
+```
+
+
+Looking at the p-values for the religiosity model, there were a few variables that were not impactful in predicting religiosity. These included those related to family religion, marital status, birth decade, race and ethnicity, voter registration, current school enrollment status, and immigration status. When these variables were removed, the $R^2$ value decreased to .6622. The spirituality model had just five variables with a high p-value, which interestingly included those related to belief in Hell (but not Heaven or God) and opinions on the legalization of abortion. Other variables with high p-values included marital status, race and ethnicity.
 
 
 # Conclusions
@@ -611,7 +617,15 @@ Overall, the results indicate that religiosity is best understood as a behaviora
 
 Similarly, depending on the religious tradition, certain political beliefs seemed to show a moderate correlation with religiosity and spirituality.
 
-For the full models, religiosity was much easier to predict based on the behavioral, political and religious beliefs and factors than spirituality. One reason that this may be the case is potentially due to religious affiliation (with higher religiosity being already more rare) being associated with a specific set of beliefs that one subscribes to. On the other hand, one can claim to be spiritual to a certain extent, but this term is more vague in what it describes. Many classify themselves as "spiritual but not religious," a category that denotes vague spiritual feelings without adherence to a specific religion. It is important to note that the analogous "religious but not spiritual" designation is almost far less common than its counterpart and mostly nonsensical.
+For the full models, religiosity was much easier to predict based on the behavioral, political and religious beliefs and factors than spirituality, as the religiosity model had an $R^2$ value of .66 compared to the $R^2$ value of .43 for the spirituality model. One reason that this may be the case is potentially due to religious affiliation (with higher religiosity being already more rare) being associated with a specific set of beliefs that one subscribes to, while for spirituality one can claim to be spiritual without subscribing to a specific set of beliefs; this term is more vague in what it describes than religiosity. Many classify themselves as "spiritual but not religious," a category that denotes vague spiritual feelings without adherence to a specific religion. It is important to note that the analogous "religious but not spiritual" designation is far less common.
+
+# Appendix
+
+## List of Variables
+
+The codebook that was available for download with the dataset gave a description of each variable that included the full question that was asked on the survey. The list of 28 primary variables of interest used in this report are listed in their original form along with their description and potential values below:
+
+
 
 
 Source:
