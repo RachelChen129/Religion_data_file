@@ -3,8 +3,8 @@ title: "Predictors of Religiosity and Spirituality"
 author: "Rachel Chen, Topher Hanagan, Jakob Hildebrandt"
 date: "2026-04-20"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
