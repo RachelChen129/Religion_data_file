@@ -23,17 +23,17 @@ data <- read_csv("Test.csv")
 
 # Abstract
 
-The level of one's religiosity and spirituality are often associated with one's other beliefs and habits regarding issues considered related in nature to faith, including political beliefs, family relationships, church attendance and prayer habits, among others. After some preliminary exploratory data analysis to get a feel for the spread of our data, we analyzed the group differences between faith traditions, the relationship between spirituality and religiosity, behavioral and political belief predictors of religiosity and spirituality, finally culminating in the complete models that predict the spirituality and religiosity of individuals based on most available factors. The complete models were able account for more of the variance of the religiosity of an individual, with an $R^2$ of .66, than for the spirituality of an individual, which had an $R^2$ of .43.
+The level of one's religiosity and spirituality are often associated with one's other beliefs and habits regarding issues considered related in nature to faith, including political beliefs, family relationships, church attendance and prayer habits, among others. We used the 2023-2024 Religious Landscape Study dataset from the PEW Research Center to analyze the factors that contribute to reported levels of spirituality and religiosity in individuals. After some preliminary exploratory data analysis to get a feel for the spread of religiosity and spirituality across religious groups, we first analyzed the group differences between faith traditions, finding a difference in the spread of both religiosity and spirituality across religious groups. Next, in analyzing the relationship between spirituality and religiosity, we found that higher levels of spirituality were associated with lower levels of religiosity. In analyzing behavioral and political belief predictors of religiosity and spirituality, we found that religious service attendance, prayer frequency, and scripture reading are statistically significant predictors of religiosity, while the statistical relevance of certain political beliefs varied among religious groups. Finally, we created complete models that model the spirituality and religiosity of individuals based on all selected variables of interest. The complete models were able account for more of the variance of the religiosity of an individual, with an $R^2$ of .66, than for the spirituality of an individual, which had an $R^2$ of .43. These findings show that self-reported levels of religiosity are easier to model than self-reported levels spirituality, which could motivate a further investigation of the relationship between the two categories and what contributes to each.
 
 # Introduction
 
-The dataset that we're working with comes from the PEW Research Center. The data comes from a survey of the American public about religious affiliation, conducted with the intention of tracking changes in U.S. religious affiliation. The survey was intended to get responses from as many Americans as possible, offering surveys in English and Spanish in all 50 states, with online, paper and phone format options. The data contains information about the religious, political, spiritual and social background of those surveyed. After trimming down our dataset to include only those with useful information and those without all NA values, we were left with 93 columns. Our driving question is twofold: 1) How well can we predict religiosity and spirituality based on factors including church attendance, family relationships, marriage, political opinions, religious affiliation and devotion, etc.? 2) Which factors are most effective in predicting religiosity/spirituality of individuals? Does this vary by religious affiliation? As one of the premier immigration destinations in the world, an analysis of the religious landscape in the United States provides key information on how 
+The dataset that we're working with, the 2023-2024 Religious Landscape Study, comes from the PEW Research Center. The data comes from a survey of over 36,000 members of the American public about religious affiliation and related beliefs, conducted with the intention of tracking changes in U.S. religious affiliation. The survey was intended to get responses from as many Americans as possible, offering surveys in English and Spanish in all 50 states, with online, paper and phone format options. The data contains information about the religious, political, spiritual and social background of those surveyed. After trimming down our dataset to include only those with useful information and those without all NA values (some of the variables were unavailable to the public due to privacy concerns), we were left with 93 variables that we could work with. Our driving question is twofold: 1) How well can we predict religiosity and spirituality based on factors including church attendance, family relationships, marriage, political opinions, religious affiliation and devotion, etc.? 2) Which factors are most effective in predicting religiosity/spirituality of individuals? Does this vary by religious affiliation? As one of the premier immigration destinations in the world, an analysis of the religious landscape in the United States provides key information on how American society is changing over time.
 
-In our dataset, many variables were unusable due to lack of data or relevance to our research question. We narrowed our dataset down to 93 variables, of which the 28 most important were related to religious affiliation, current religion, level of religiosity and spirituality on a scale of 1-5, frequency of church service attendance, belief in God, Heaven and Hell, frequency of prayer, reading of scripture and attendance of religious services growing up, sharing beliefs with others, support of legalization of abortion, the religion of the respondents' family, marital status, support of prayer in public schools, birth decade, race and hispanic status, educational attainment, current school enrollment and employment status, immigration and voting status, political party affiliation and views, income bracket and gender. Many other variables exist and are used in this paper, but these are a sampling of many that are related to the question of religiosity and spirituality.
+As mentioned, we narrowed our dataset down to 93 variables, of which the 28 most important were related to behavioral, political, and religious information. Of the variables that were selected but not used, many were considered to be either too specific, heavily related in nature to another variable, or simply not helpful for the purposes of this paper, and were thus discarded. A full list of the variables and the associated questions used in our paper are provided in the appendix. 
 
 # Exploratory Data Analysis
 
-First, we turned the current religion variable into a factor so that we can create "bins" of how many people fall into each religious tradition.
+In analyzing the self-reported levels of religiosity and spirituality, it is helpful to understand the religious spread of the data. Several of the variables were related to religious identity, including family religion and current religion, so we seeked to plot current religion against self-reported levels of spirituality and religiosity.
 
 ```{r include=FALSE}
 data <- data |> mutate(CURREL = factor(CURREL,
@@ -52,16 +52,7 @@ data <- data |> mutate(RELTRAD = factor(RELTRAD,
 ))
 ```
 
-Taking a quick
-
-```{r}
-cor(data$SPIRPER, data$RELPER)
-```
-
-From there, we were able to look at the relationship between some of the other variables and religion.
-
-First, before trying to plot the data, we noticed that there was a much larger number of those who identified as Catholic, Protestant or Unaffiliated than anything else, so we split the histogram facet_wrap into two to account for this (then split it again to account for the much larger prevalence of Mormon, Jewish and Other Faith than all the other religious identities combined) so that the spread of each religion across the different values would be clear. This splitting up of the religious categories will prove useful throughout the duration of the EDA section.
-
+First, before trying to plot the data, we noticed that there was a much larger number of those who identified as Catholic, Protestant or Unaffiliated than anything else, so we split the groupings of histograms into two to account for this (then split it again to account for the much larger prevalence of Mormon, Jewish and Other Faith than all the other religious identities combined) so that the spread of each religion across the different values would be clear. This splitting up of the religious categories will prove useful throughout the duration of the EDA section.
 
 Looking at the correlation between each specific faith and personal spirituality (1=most spiritual, 4= least spiritual, 5=don't know/refused), we notice a few trends: most faiths seemed to have the largest spike at either 1 or 2. Interestingly, the Unaffiliated category also has the largest spikes around 1 and 2, and not 4. This could be that many people who identified as Unaffiliated, although they did not profess a specific religion, still considered themselves spiritual (spiritual but not religious).
 
@@ -89,7 +80,7 @@ ggplot(data = data_subset3, aes(x = SPIRPER)) +
   labs(x = "Spirituality")
 ```
 
-The spread for religiosity is shifted more to the higher (less religious) values than spirituality: there were only two religions where the plurality (largest spike) was 1 (most religious).
+The spread for religiosity is shifted more to the higher (less religious) values than spirituality: there were only two religions where the plurality (largest spike) was 1 (most religious). This difference between the self-reported levels of spirituality and religiosity are striking, as for essentially every religion, levels of spirituality were higher than religiosity. This motivated an analysis of the relationship between spirituality and religiosity, as well as the factors that lead to each variable.
 
 ```{r, message=FALSE, echo=FALSE, fig.width=10, fig.height=5}
 data$RELPER[data$RELPER == 99] <- 5
@@ -268,7 +259,7 @@ The heatmap shows a clear positive relationship between spirituality and religio
 
 We want to check the assumptions for linear model:
 
-```{r, echo=FALSE, warning=FALSE}
+```{r, echo=FALSE, warning=FALSE, fig.width=10, fig.height=5}
 m1 <- augment(model1)
 
 ggplot(data = m1, aes(x = .resid)) +
@@ -418,7 +409,7 @@ The coefficient plot compares the effects of behavioral predictors on religiosit
 
 We want to check the assumptions for linear model:
 
-```{r, echo=FALSE, warning=FALSE}
+```{r, echo=FALSE, warning=FALSE, fig.width=10, fig.height=5}
 m2 <- augment(model2)
 
 ggplot(data = m2, aes(x = .resid)) +
@@ -500,7 +491,7 @@ summary(model4)
 ```
 In an attempt to improve the model, support for homosexuality in society and impact of increasing religious diversity were removed. There was no absolute difference in $R^2$, with the adjusted value remaining 0.2456. 
 
-```{r, echo=FALSE,warning=FALSE, message=FALSE}
+```{r, echo=FALSE,warning=FALSE, message=FALSE, fig.width=10, fig.height=5}
 m3 <- augment(model3)
 
 ggplot(data = m3, aes(x = .resid)) +
@@ -535,7 +526,7 @@ The overlaid normal curve bears some resemblance to the fitted residuals, but th
 
 The Q-Q plot is step-wise due to the discrete nature of the data. As expected for a piece wise/step wise line, the residuals oscillate around the y = x line in a fairly regular fashion. 
 
-Given these two figures,the assumption of normality, while not perfect, should not be assumed to be invalid. 
+Given these two figures, the assumption of normality, while not perfect, should not be assumed to be invalid. 
 
 ### Protestant Group
 
@@ -562,7 +553,7 @@ summary(model_prot_pol2)
 ```
 Removing the variables that were did not achieve significance the model was remade, but with poor results. Less variation was explained with the model than with all eight variables  ($R^2$ = 0.07373)
 
-```{r, echo=FALSE,warning=FALSE, message=FALSE}
+```{r, echo=FALSE,warning=FALSE, message=FALSE, fig.width=10, fig.height=5}
 mprot <- augment(model_prot_pol)
 
 ggplot(data = mprot, aes(x = .resid)) +
@@ -623,7 +614,7 @@ summary(model_catholic_pol2)
 ```
 Removing the four variables which did not achieve significance, the model was remade, yielding an $R^2$ of 0.1572, practically identical to that of the model built with all eight variables. 
 
-```{r, echo=FALSE,warning=FALSE, message=FALSE}
+```{r, echo=FALSE,warning=FALSE, message=FALSE, fig.width=10, fig.height=5}
 mcath <- augment(model_catholic_pol)
 
 ggplot(data = mcath, aes(x = .resid)) +
@@ -678,7 +669,7 @@ summary(model_unaffil_pol2)
 ```
 Almost no significant information is gained in removing the three variables which failed to be significant at the 0.05 level. $R^2$ increase by two tenths of a percent to 0.1168.
 
-```{r, echo=FALSE,warning=FALSE, message=FALSE }
+```{r, echo=FALSE,warning=FALSE, message=FALSE, fig.width=10, fig.height=5}
 munaf <- augment(model_unaffil_pol)
 
 ggplot(data = munaf, aes(x = .resid)) +
@@ -734,12 +725,12 @@ ggplot(all_models, aes(x = estimate, y = term, color = Group)) +
   scale_color_brewer(palette = "Set2")
 
 ```
-From this figure, we see that there is inter-religious difference with regards to variables being significant in some religious group and not in others and sometimes, such as with support for gay marriage, the overall is significantly different from the three specific groups. For example, Transgender acceptance is a statistically significant predictor of religiosity amongst unaffiliated people but not within Catholics or Protestants. This contrasts with the overall relation which suggested quite a strong inverse relationship. Environmental regulation is another example. While Catholics and Protestants have similar relationships with religiosity and environmental regulation, the general public and unaffiliated groups do not resemble the two Christian group values. 
+From this figure, we see that there is inter-religious difference with regards to variables being significant in some religious group and not in others and sometimes, such as with support for gay marriage, the overall is significantly different from the three specific groups. For example, Transgender acceptance is a statistically significant predictor of religiosity among unaffiliated people but not within Catholics or Protestants. This contrasts with the overall relation which suggested quite a strong inverse relationship. Environmental regulation is another example. While Catholics and Protestants have similar relationships with religiosity and environmental regulation, the general public and unaffiliated groups do not resemble the two Christian group values. 
 
 
 ## Section 5: Comprehensive Model
 
-Finally, using 26 variables we construct a comprehensive model that incorporates behavioral measures, belief variables, and religious affiliation to determine which factors are most important in predicting religiosity.
+Finally, using 25 variables (not including current religion, which is completely collinear with religious tradition) we construct a comprehensive linear model that incorporates behavioral measures, belief variables, and religious affiliation to determine which factors are most important in predicting religiosity and how much of the variance of self-reported levels of religiosity can be explained by these predictors.
 
 ```{r, echo=FALSE, include=FALSE}
 
@@ -757,7 +748,7 @@ final_model_rel <- lm(RELPER ~ RELTRAD + ATTNDPERRLS + GOD + HVN + HLL + PRAY + 
 summary(final_model_rel)
 ```
 
-With an $R^2$ of 0.6645, we have pretty good confidence that this model can predict religiosity in individuals. An $R^2$ of 0.66 tells us that 66% of variance can be explained by the model and the variables that we presented it with. The $R^2$ for spirituality was quite a bit lower, however, with an $R^2$ of just .4346.
+With an $R^2$ of 0.6645, this model can account for 66% of variance through the variables that we presented it with. The $R^2$ for spirituality was quite a bit lower, however, with an $R^2$ of just .4346, meaning that those same variables were worse at accounting for the variance in response of self-reported levels of spirituality.
 
 ```{r, echo=FALSE, include=FALSE}
 final_model_spir <- lm(SPIRPER ~ RELTRAD +  ATTNDPERRLS + GOD + HVN + HLL + PRAY + PRAC_D + PRAC_B + ABRTLGL  + FRMREL + CHATTEND + MARITAL + SCPRY2 + BIRTHDECADE + HISP + RACECMB + EDUCREC + E2 + EMPLSIT + USGEN + REG + PARTY + IDEO + INC_SDT1 + GENDER, data = data_new)
@@ -838,29 +829,73 @@ summary(final_model_spir2)
 ```
 
 
-Looking at the p-values for the religiosity model, there were a few variables that were not impactful in predicting religiosity. These included those related to family religion, marital status, birth decade, race and ethnicity, voter registration, current school enrollment status, and immigration status. When these variables were removed, the $R^2$ value decreased to .6622. The spirituality model had just five variables with a high p-value, which interestingly included those related to belief in Hell (but not Heaven or God) and opinions on the legalization of abortion. Other variables with high p-values included marital status, race and ethnicity.
+Looking at the p-values for the religiosity model, there were a few variables that were not impactful in predicting religiosity. These included those related to family religion, marital status, birth decade, race and ethnicity, voter registration, current school enrollment status, and immigration status. When these variables were removed, the $R^2$ value decreased to .6622, which is practically the same. The spirituality model had just five variables with a high p-value, which interestingly included those related to belief in Hell (but not Heaven or God) and opinions on the legalization of abortion. Other variables with high p-values included marital status, race and ethnicity.
 
 
 # Conclusions
 
-Across both the full sample and some religious subsamples, behavioral factors—including attendance, prayer frequency, and scripture reading—consistently emerge as significant predictors of religiosity. These findings suggest that religiosity is strongly shaped by observable religious practices, rather than being solely an internal belief system.
+Across both the full sample and some religious subsamples, behavioral factors—including attendance, prayer frequency, and scripture reading—consistently emerge as significant predictors of religiosity. These findings suggest that religiosity is strongly shaped by observable religious practices, rather than being solely an internal belief system. However, the strength of these relationships varies across religious traditions. The Catholic and Muslim subsamples show relatively stronger explanatory power, while the Protestant model shows a weaker relationship between behaviors and religiosity. The Unaffiliated group also demonstrates that behavioral practices remain relevant even in the absence of formal religious affiliation. Overall, the results indicate that religiosity is best understood as a behaviorally structured phenomenon, but the degree to which behavior predicts religiosity differs across religious traditions. This suggests that religious tradition plays a moderating role in shaping how behaviors translate into levels of religiosity. Similarly, depending on the religious tradition, certain political beliefs seemed to show a moderate correlation with religiosity and spirituality. For the full models, religiosity was much easier to model based on the behavioral, political and religious beliefs and factors than spirituality, as the religiosity model had an $R^2$ value of .66 compared to the $R^2$ value of .43 for the spirituality model. One reason that this may be the case is potentially due to religious affiliation (with higher religiosity being already more rare) being associated with a specific set of beliefs that one subscribes to, while for spirituality, one can claim to be spiritual without subscribing to a specific set of beliefs; spirituality is more vague in what it describes than religiosity. Many classify themselves as "spiritual but not religious," a category that denotes vague spiritual feelings without adherence to a specific religion. It is important to note that the analogous "religious but not spiritual" designation is far less common.
 
-However, the strength of these relationships varies across religious traditions. The Catholic and Muslim subsamples show relatively stronger explanatory power, while the Protestant model shows a weaker relationship between behaviors and religiosity. The Unaffiliated group also demonstrates that behavioral practices remain relevant even in the absence of formal religious affiliation.
+# Appendix: List of Variables
 
-Overall, the results indicate that religiosity is best understood as a behaviorally structured phenomenon, but the degree to which behavior predicts religiosity differs across religious traditions. This suggests that religious tradition plays a moderating role in shaping how behaviors translate into levels of religiosity.
+The codebook that was available for download with the dataset gave a description of each variable that included the full question that was asked on the survey, as well as the possible answers to the question. The list of 28 primary variables of interest used in this report are listed in their original form along with their description below:
 
-Similarly, depending on the religious tradition, certain political beliefs seemed to show a moderate correlation with religiosity and spirituality.
+SPIRPER: To what extent do you consider yourself a spiritual person? Are you...
 
-For the full models, religiosity was much easier to predict based on the behavioral, political and religious beliefs and factors than spirituality, as the religiosity model had an $R^2$ value of .66 compared to the $R^2$ value of .43 for the spirituality model. One reason that this may be the case is potentially due to religious affiliation (with higher religiosity being already more rare) being associated with a specific set of beliefs that one subscribes to, while for spirituality one can claim to be spiritual without subscribing to a specific set of beliefs; this term is more vague in what it describes than religiosity. Many classify themselves as "spiritual but not religious," a category that denotes vague spiritual feelings without adherence to a specific religion. It is important to note that the analogous "religious but not spiritual" designation is far less common.
+RELPER: To what extent do you consider yourself a religious person? Are you...
 
-# Appendix
+RELTRAD: Collapsed version of FAMILY: Respondent's religious tradition; refer to documentation for additional information
 
-## List of Variables
+ATTNDPERRLS: How often do you attend religious services in person?
 
-The codebook that was available for download with the dataset gave a description of each variable that included the full question that was asked on the survey. The list of 28 primary variables of interest used in this report are listed in their original form along with their description and potential values below:
+GOD: Do you believe in God or a universal spirit?
 
+HVN: Do you think there is a heaven where people who have led good lives are eternally rewarded?
 
+HLL: Do you think there is a hell where people who have led bad lives and die without being sorry are eternally punished?
 
+PRAY: Outside of attending religious services, how often do you pray?
 
-Source:
-https://www.pewresearch.org/dataset/2023-24-religious-landscape-study-rls-dataset/
+PRAC_B: How often do you read scripture outside of religious services?
+
+PRAC_D: How often do you share your views about religion with people from other religious backgrounds?
+
+ABRTLGL: Do you think abortion should be...
+
+FRMREL: Religion in which respondent was raised
+
+CHATTEND: How often did you attend religious services in person when you were growing up?
+
+MARITAL: Current marital status
+
+SCPRY2: Allowing public school teachers to lead their classes in prayers that refer to God but not to any specific religion: favor or oppose?
+
+BIRTHDECADE: Decade in which respondent was born
+
+HISP: Are you of Hispanic, Latino, or Spanish origin, such as Mexican, Puerto Rican or Cuban?
+
+RACECMB: Race based on responses to RACEMOD_1-6 (CAWI/CATI) and Q94 (PAPI)
+
+EDUCREC: What is the highest degree or level of school you have completed?
+
+E2: Are you now enrolled in school, either full time or part time?
+
+EMPLSIT: What is your current work situation?
+
+USGEN: Indicator of whether respondent is an immigrant to the U.S. or the child of immigrants
+
+REG: Are you registered to vote at your current address?
+
+PARTY: In politics today, do you consider yourself a...
+
+IDEO: In general, would you describe your political views as...
+
+INC_SDT1: Last year, what was your total family income?
+
+GENDER: Do you describe yourself as a man, a woman or in some other way?
+
+CURREL: Respondent's current religion - recoded from RELTRAD to match coding in FRMREL and SPREL for analysis of religious switching and intermarriage
+
+# Sources
+
+Pew Research Center. 2025. "2023-24 Religious Landscape Study (RLS) Dataset." doi: 10.58094/3kwb-bf52.
