@@ -320,7 +320,7 @@ The results from the full model indicate that attendance, prayer frequency, and 
 
 The model explains approximately 58.56% ($R^2$ = 0.5856) of the variation in religiosity, indicating a relatively strong relationship between behavioral practices and religiosity.
 
-After check the total group model, we focus on Protestant, Catholic, and Unaffiliated groups because they have the largest sample sizes in the dataset, which provides more reliable and stable estimates. While core practices such as prayer and attendance are strong predictors of religiosity in the Muslim subsample, other behaviors such as scripture reading and sharing beliefs are not statistically significant, suggesting that the relationship between behavior and religiosity is selective rather than uniform.
+After checking the total group model, we focus on Protestant, Catholic, and Unaffiliated groups because they have the largest sample sizes in the dataset, which provides more reliable and stable estimates. While core practices such as prayer and attendance are strong predictors of religiosity in the Muslim subsample, other behaviors such as scripture reading and sharing beliefs are not statistically significant, suggesting that the relationship between behavior and religiosity is selective rather than uniform.
 
 ### Protestant Group
 
@@ -452,6 +452,12 @@ We estimate separate models by religious group to examine whether the relationsh
 
 ## Section 4: Political Predictors of Religiosity
 
+Religious groups are frequently cited as key voting groups. Notably, there has been recent conflation of "Evangelicals" the voting group with _Evangelicalism_ the religious group within Protestantism. This data aims to determine if socio-political predictions can be used to predict religiosity within the sampled set. 
+
+$H_0$: Stances on all cultural and political issues will have equal slopes
+
+$H_a$: At least one of these issue's explains variance in the data set
+
 ```{r, echo=FALSE}
 data_clean <- data |>
   filter(
@@ -480,56 +486,237 @@ data_clean <- data |>
 model3 <- lm(Religiosity ~ Abortion_Legality + Gay_Marriage_Support  + Transgender_Acceptance + Immigrant_Impact + Racial_Diversity + Relig_Diversity + Homosexuality_Acceptance + Environmental_Regulation, data = data_clean)
 summary(model3)
 
+```
+With the null values (99s) removed we see that there is substantial evidence to reject the null hypothesis. P-values for individual variables also indicate that there is statistical relation between the variables and religiosity. Six of the eight variables are significant at the 0.05 level. The effect of increasing religious diversity and support for acceptance of homosexuality in society do not meet the threshold for significance.
+
+The reverse-coding further complicates the estimated coefficients here. Since decreasing value answers are typically associeted with the more secular or progressive position, many of these have a strongly negative correlation with religiosity. For example, a higher value would indicate less support for abortion resulting a greater decrease in value and thus __increase__ in religiosity. This correlation is especially strong for the inverse relationship between support for abortion and acceptance of transgender individuals. 
+
+Our adjusted $R^2$ was .2456, meaning that approximately 75% of the variation cannot be explained by this data. While we see substantial benefit to this model, there is still unexplained error and thus improvement which can be made. 
+
+```{r, echo=FALSE}
+model4 <- lm(Religiosity ~ Abortion_Legality + Gay_Marriage_Support  + Transgender_Acceptance + Immigrant_Impact + Racial_Diversity + Environmental_Regulation, data = data_clean)
+summary(model4)
+
+```
+In an attempt to improve the model, support for homosexuality in society and impact of increasing religious diversity were removed. There was no absolute difference in $R^2$, with the adjusted value remaining 0.2456. 
+
+```{r, echo=FALSE,warning=FALSE, message=FALSE}
+m3 <- augment(model3)
+
+ggplot(data = m3, aes(x = .resid)) +
+  geom_histogram(aes(y = ..density..), bins = 12, fill = "grey", color = "white") +
+  stat_function(
+    fun = dnorm,
+    args = list(
+      mean = mean(m3$.resid, na.rm = TRUE),
+      sd = sd(m3$.resid, na.rm = TRUE)
+    ),
+    color = "purple",
+    linewidth = 1.5
+  ) +
+  xlim(-2.5, 2.5) + 
+  labs(
+    title = "Histogram of Residuals",
+    x = "Residuals",
+    y = "Density"
+  ) +
+  theme_minimal()
 
 
-m1_resids <- augment(model3) %>% 
-  mutate(Model = "Religiosity Model")
+ggplot(model1, aes(sample = .resid)) +
+  stat_qq() +
+  stat_qq_line() +
+  labs(title = "Q-Q Plot of Residuals") +
+  theme_minimal()
+```
+
+As mentioned in section 3, assumed normality can be checked based on the residuals being fit versus a normal curve. 
+The overlaid normal curve bears some resemblance to the fitted residuals, but there is more slight variation from predicted than exact values. Discrete data points may be a significant contributor to this effect. However, the symmetry present does encourage us to continue with the assumption that normality can be reasonably assumed. 
+
+The Q-Q plot is step-wise due to the discrete nature of the data. As expected for a piece wise/step wise line, the residuals oscillate around the y = x line in a fairly regular fashion. 
+
+Given these two figures,the assumption of normality, while not perfect, should not be assumed to be invalid. 
+
+### Protestant Group
+
+The model can be computed for Protestants alone:
+
+```{r, echo=FALSE}
+protestant_data <- subset(data_clean, CURREL == "Protestant")
+model_prot_pol <- lm(Religiosity ~ Abortion_Legality + Gay_Marriage_Support  + Transgender_Acceptance + Immigrant_Impact + Racial_Diversity + Relig_Diversity + Homosexuality_Acceptance + Environmental_Regulation,
+  data = protestant_data
+)
+summary(model_prot_pol)
+```
+
+Estimating Protestant religiosity with this data was not successful. Only 7% of varaition could be explained using these variables ($R^2$ = 0.07393).
+Half (four) of the variables achieved significance at the 95% level. 
+
+
+```{r, echo=FALSE}
+protestant_data <- subset(data_clean, CURREL == "Protestant")
+model_prot_pol2 <- lm(Religiosity ~ Abortion_Legality + Gay_Marriage_Support + Homosexuality_Acceptance + Environmental_Regulation,
+  data = protestant_data
+)
+summary(model_prot_pol2)
+```
+Removing the variables that were did not achieve significance the model was remade, but with poor results. Less variation was explained with the model than with all eight variables  ($R^2$ = 0.07373)
+
+```{r, echo=FALSE,warning=FALSE, message=FALSE}
+mprot <- augment(model_prot_pol)
+
+ggplot(data = mprot, aes(x = .resid)) +
+  geom_histogram(aes(y = ..density..), bins = 12, fill = "grey", color = "white") +
+  stat_function(
+    fun = dnorm,
+    args = list(
+      mean = mean(mprot$.resid, na.rm = TRUE),
+      sd = sd(mprot$.resid, na.rm = TRUE)
+    ),
+    color = "blue",
+    linewidth = 1.5
+  ) +
+  xlim(-2.5, 2.5) + 
+  labs(
+    title = "Histogram of Residuals",
+    x = "Residuals",
+    y = "Density"
+  ) +
+  theme_minimal()
+
+
+ggplot(mprot, aes(sample = .resid)) +
+  stat_qq() +
+  stat_qq_line() +
+  labs(title = "Q-Q Plot of Residuals") +
+  theme_minimal()
+```
+Fitting a normal curve to the residuals, the overlaid normal curve does nicely map onto our observed data. However, we do notice that it is slightly right-tailed. 
+However, the majority of individuals seem to fit well within the model. 
+
+The Q-Q plote tells us that there is a major issue with the normality assumption. Returning to the histogram we can observe that the model is actually underpredicting religiosity. A negative residual means that the actual religiosity value was lower than our model calculated. One possible reason for this could be that religous Protestants are more progressive on social issues and consider themselves more religious than our model predicts.
+
+
+
+### Catholic Group
+
+```{r, echo=FALSE}
+catholic_data <- subset(data_clean, CURREL == "Catholic")
+model_catholic_pol <- lm(Religiosity ~ Abortion_Legality + Gay_Marriage_Support  + Transgender_Acceptance + Immigrant_Impact + Racial_Diversity + Relig_Diversity + Homosexuality_Acceptance + Environmental_Regulation,
+  data = catholic_data
+)
+summary(model_catholic_pol)
+```
+
+Like the other socio-political models built, modeling Catholic respondents alone achieved significance at the 95% confidence level. Four variables did not achieve significance with p-values above 0.05. Effect of increasing religious diversity, acceptance of homosexuality in society, acceptance for transgender identity, and effect of immigration were not shown to be statistically significant at the 0.05 level. 
+
+
+The model did not provide an incredible amount of information. With an $R^2$ of 0.1574, the vast majority of the variance (>80%) could not be explained with the tested variables. 
+
+
+```{r, echo=FALSE}
+catholic_data <- subset(data_clean, CURREL == "Catholic")
+model_catholic_pol2 <- lm(Religiosity ~ Abortion_Legality + Gay_Marriage_Support + Racial_Diversity + Environmental_Regulation,
+  data = catholic_data
+)
+summary(model_catholic_pol2)
+```
+Removing the four variables which did not achieve significance, the model was remade, yielding an $R^2$ of 0.1572, practically identical to that of the model built with all eight variables. 
+
+```{r, echo=FALSE,warning=FALSE, message=FALSE}
+mcath <- augment(model_catholic_pol)
+
+ggplot(data = mcath, aes(x = .resid)) +
+  geom_histogram(aes(y = ..density..), bins = 15, fill = "grey", color = "white") +
+  stat_function(
+    fun = dnorm,
+    args = list(
+      mean = mean(mcath$.resid, na.rm = TRUE),
+      sd = sd(mcath$.resid, na.rm = TRUE)
+    ),
+    color = "red",
+    linewidth = 1.5
+  ) +
+  xlim(-2.5, 2.5) + 
+  labs(
+    title = "Histogram of Residuals",
+    x = "Residuals",
+    y = "Density"
+  ) +
+  theme_minimal()
+
+ggplot(model1, aes(sample = .resid)) +
+  stat_qq() +
+  stat_qq_line() +
+  labs(title = "Q-Q Plot of Residuals") +
+  theme_minimal()
+```
+The histogram represents a generally normal curve with the exception of some odd residuals which are underpredicting religiosity based on the answers to these questions. 
+
+But, the Q-Q plot does not provide information beyond generally supporting the assumption of normality. 
+
+### Unaffiliated Group
+
+```{r, echo=FALSE}
+unaffiliated_data <- subset(data_clean, CURREL == "Unaffiliated")
+model_unaffil_pol <- lm(Religiosity ~ Abortion_Legality + Gay_Marriage_Support  + Transgender_Acceptance + Immigrant_Impact + Racial_Diversity + Relig_Diversity + Homosexuality_Acceptance + Environmental_Regulation,
+  data = unaffiliated_data
+)
+summary(model_unaffil_pol)
 
 
 ```
-It would appear that removal of the 99s which represent those who did not answer made a substantial difference on the fit of the model. 
-Furthermore, support for gay marriage predicts religiosity well, as does support for transgender individuals. However, acceptance of homosexuality is an incredibly poor predictor of religiosity in the body public. 
-
-Alternatively, support for abortion, homosexuality, and gay marriage predicts spirituality but support for transgender individuals does not predict spirituality.
+Again, we see that the model explains only a minimal amount of variation in the data, $R^2$ = 0.1166 despite the fact that the p-value is well below the 5% significance level. However, effects of increasing immigration, increasing religious diversity, and racial diversity are all incredibly poor predictors of religiosity in unaffiliated people.
 
 ```{r, echo=FALSE}
+unaffiliated_data <- subset(data_clean, CURREL == "Unaffiliated")
+model_unaffil_pol2 <- lm(Religiosity ~ Abortion_Legality + Gay_Marriage_Support  + Transgender_Acceptance + Immigrant_Impact + Environmental_Regulation,
+  data = unaffiliated_data
+)
+summary(model_unaffil_pol2)
 
-catholic_pol <- data_clean |> filter(CURREL == "Catholic")
-catholic_polly <- lm(Religiosity ~ Abortion_Legality  + Gay_Marriage_Support + Homosexuality_Acceptance + Transgender_Acceptance, data = catholic_pol)
-summary(catholic_polly)
+```
+Almost no significant information is gained in removing the three variables which failed to be significant at the 0.05 level. $R^2$ increase by two tenths of a percent to 0.1168.
 
+```{r, echo=FALSE,warning=FALSE, message=FALSE }
+munaf <- augment(model_unaffil_pol)
 
-protestant_pol <- data_clean |> filter(CURREL == "Protestant")
-protestant_polly <- lm(Religiosity ~ Abortion_Legality  + Gay_Marriage_Support + Homosexuality_Acceptance + Transgender_Acceptance, data = protestant_pol)
-summary(protestant_polly)
+ggplot(data = munaf, aes(x = .resid)) +
+  geom_histogram(aes(y = ..density..), bins = 12, fill = "grey", color = "white") +
+  stat_function(
+    fun = dnorm,
+    args = list(
+      mean = mean(munaf$.resid, na.rm = TRUE),
+      sd = sd(munaf$.resid, na.rm = TRUE)
+    ),
+    color = "forestgreen",
+    linewidth = 1.5
+  ) +
+  xlim(-2.5, 2.5) + 
+  labs(
+    title = "Histogram of Residuals",
+    x = "Residuals",
+    y = "Density"
+  ) +
+  theme_minimal()
 
-unaffiliated_pol <- data_clean |> filter(CURREL == "Unaffiliated")
-unaffiliated_polly <- lm(Religiosity ~ Abortion_Legality  + Gay_Marriage_Support + Homosexuality_Acceptance + Transgender_Acceptance, data = unaffiliated_pol)
-summary(unaffiliated_polly)
+ggplot(model1, aes(sample = .resid)) +
+  stat_qq() +
+  stat_qq_line() +
+  labs(title = "Q-Q Plot of Residuals") +
+  theme_minimal()
 ```
 
+The histogram checking for normality would suggest to us that our assumptions are not accurate. However, the Q-Q plot, which is more sensitive, displays the expected step wise oscillation that we have seen in the other groups. The histogram is left-skewed. It provides the counterweight to the two above Christian groups. While the model under predicts religiosity in Christians, it seems to over predict it in unaffiliated people. 
 
-While support for abortion, same sex marriage, and homosexuality is a statistically significant predictor of religiosity in Catholics and people who are unaffiliated, support for these causes is not statistically significant in predicting religiosity in Protestants. Interestingly, greater acceptance of transgender individuals cannot be used to predict religiosity in people who are unaffiliated. 
-
+__Display of Calculated Coefficients__
 ```{r, echo=FALSE}
-
-
-catholic_pol2 <- data_clean |> filter(CURREL == "Catholic")
-catholic_polly2 <- lm(Religiosity ~ Immigrant_Impact + Relig_Diversity   + Racial_Diversity + Environmental_Regulation, data = catholic_pol)
-summary(catholic_polly2)
-
-protestant_pol2 <- data_clean |> filter(CURREL == "Protestant")
-protestant_polly2 <- lm(Religiosity ~ Immigrant_Impact + Relig_Diversity + Racial_Diversity + Environmental_Regulation, data = protestant_pol2)
-summary(protestant_polly2)
-
-unaffiliated_pol2 <- data_clean |> filter(CURREL == "Unaffiliated")
-unaffiliated_polly2 <- lm(Religiosity ~ Abortion_Legality  + Gay_Marriage_Support + Homosexuality_Acceptance + Transgender_Acceptance, data = unaffiliated_pol2)
-summary(unaffiliated_polly2)
 
 all_models <- bind_rows(
-  tidy(catholic_polly2, conf.int = TRUE) %>% mutate(Group = "Catholic"),
-  tidy(protestant_polly2, conf.int = TRUE) %>% mutate(Group = "Protestant"),
-  tidy(unaffiliated_polly2, conf.int = TRUE) %>% mutate(Group = "Unaffiliated")
+  tidy(model3, conf.int = TRUE) %>% mutate(Group = "All Respondents"),
+  tidy(model_catholic_pol, conf.int = TRUE) %>% mutate(Group = "Catholic"),
+  tidy(model_prot_pol, conf.int = TRUE) %>% mutate(Group = "Protestant"),
+  tidy(model_unaffil_pol, conf.int = TRUE) %>% mutate(Group = "Unaffiliated")
 ) %>%
   filter(term != "(Intercept)")
 
@@ -538,17 +725,17 @@ ggplot(all_models, aes(x = estimate, y = term, color = Group)) +
   geom_point(position = position_dodge(width = 0.6), size = 3) +
   geom_errorbarh(aes(xmin = conf.low, xmax = conf.high), 
                  position = position_dodge(width = 0.6), height = 0.3) +
-  labs(title = "Social & Diversity Predictors of Religiosity",
+  labs(title = "Socio-political Predictors of Religiosity",
        subtitle = "Comparing Regression Coefficients (Slopes) across Religious Traditions",
        x = "Estimate (Impact on Religiosity)",
        y = "Predictor Variable",
        color = "Religious Tradition") +
   theme_minimal() +
-  scale_color_brewer(palette = "Set1")
-
-
+  scale_color_brewer(palette = "Set2")
 
 ```
+From this figure, we see that there is inter-religious difference with regards to variables being significant in some religious group and not in others and sometimes, such as with support for gay marriage, the overall is significantly different from the three specific groups. For example, Transgender acceptance is a statistically significant predictor of religiosity amongst unaffiliated people but not within Catholics or Protestants. This contrasts with the overall relation which suggested quite a strong inverse relationship. Environmental regulation is another example. While Catholics and Protestants have similar relationships with religiosity and environmental regulation, the general public and unaffiliated groups do not resemble the two Christian group values. 
+
 
 ## Section 5: Comprehensive Model
 
